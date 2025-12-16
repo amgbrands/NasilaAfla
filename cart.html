@@ -174,7 +174,7 @@
         <span>KES ${item.price}</span>
         <div class="qty">
           <button onclick="updateQty(${index}, -1)">−</button>
-          <span>${item.qty}</span>
+          <input type='number' min='0' value='${item.qty}' style='width:50px;text-align:center;' onchange='manualQty(${index}, this.value)'>
           <button onclick="updateQty(${index}, 1)">+</button>
         </div>
         <strong>KES ${item.price * item.qty}</strong>
@@ -190,6 +190,13 @@
 
   function updateQty(index, change) {
     cart[index].qty = Math.max(0, cart[index].qty + change);
+    renderCart();
+  }
+
+  function manualQty(index, value) {
+    let val = parseInt(value);
+    if (isNaN(val) || val < 0) val = 0;
+    cart[index].qty = val;
     renderCart();
   }
 

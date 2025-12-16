@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <header style="background:#fff; box-shadow:0 4px 12px rgba(0,0,0,0.05); padding:15px 0;">
+  <div style="width:90%; max-width:1100px; margin:auto; display:flex; justify-content:space-between; align-items:center;">
+    <strong>Nasila Afla</strong>
+    <nav>
+      <a href="index.html" style="margin-right:20px;">Home</a>
+      <a href="cart.html">Cart</a>
+    </nav>
+  </div>
+</header>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Cart | Nasila Afla</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #F8FAFC;
+      margin: 0;
+      padding: 40px 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 1100px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 40px;
+    }
+
+    h2 { margin-bottom: 20px; }
+
+    /* CART ITEMS */
+    .cart-item {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: 1fr auto auto auto;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
+    }
+
+    .cart-item h4 { margin: 0; }
+
+    .qty {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .qty button {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: none;
+      background: #E6C77D;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* SUMMARY */
+    .summary {
+      background: #0F172A;
+      color: #fff;
+      border-radius: 18px;
+      padding: 25px;
+      position: sticky;
+      top: 30px;
+      height: fit-content;
+    }
+
+    .summary p {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+    }
+
+    .summary hr { border-color: rgba(255,255,255,0.2); }
+
+    .checkout {
+      margin-top: 20px;
+      width: 100%;
+      padding: 14px;
+      background: #E6C77D;
+      border: none;
+      border-radius: 30px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    @media(max-width: 768px) {
+      .container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- LEFT: CART -->
+  <div>
+    <h2>Your Order</h2>
+    <div id="cart-items"></div>
+  </div>
+
+  <!-- RIGHT: SUMMARY -->
+  <div class="summary">
+    <h3>Payment Summary</h3>
+    <p><span>Subtotal</span><span id="subtotal">KES 0</span></p>
+    <p><span>Service Fee</span><span>KES 0</span></p>
+    <hr />
+    <p><strong>Total</strong><strong id="total">KES 0</strong></p>
+
+    <h4 style="margin-top:25px">Payment Details</h4>
+    <p>M-PESA Paybill:<br><strong>XXXXXX</strong></p>
+    <p>Account:<br><strong>Your Name</strong></p>
+
+    <button class="checkout">Place Order</button>
+  </div>
+
+</div>
+
+<script>
+  const cartData = JSON.parse(localStorage.getItem('cart')) || [];
+  const cartContainer = document.getElementById('cart-items');
+  const subtotalEl = document.getElementById('subtotal');
+  const totalEl = document.getElementById('total');
+
+  function renderCart() {
+    cartContainer.innerHTML = '';
+    let subtotal = 0;
+
+    cartData.forEach((item, index) => {
+      subtotal += item.price * item.qty;
+
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <h4>${item.name}</h4>
+        <span>KES ${item.price}</span>
+        <div class="qty">
+          <button onclick="updateQty(${index}, -1)">−</button>
+          <span>${item.qty}</span>
+          <button onclick="updateQty(${index}, 1)">+</button>
+        </div>
+        <strong>KES ${item.price * item.qty}</strong>
+      `;
+      cartContainer.appendChild(div);
+    });
+
+    subtotalEl.textContent = `KES ${subtotal}`;
+    totalEl.textContent = `KES ${subtotal}`;
+
+    localStorage.setItem('cart', JSON.stringify(cartData));
+  }
+
+  function updateQty(index, change) {
+    cartData[index].qty += change;
+    if (cartData[index].qty <= 0) cartData.splice(index, 1);
+    renderCart();
+  }
+
+  renderCart();
+</script>
+
+</body>
+</html>

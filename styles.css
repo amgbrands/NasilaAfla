@@ -122,6 +122,8 @@ nav {
 section {
   padding: 80px 0;
   background: rgba(248, 250, 252, 0.85);
+  position: relative;
+  z-index: 1;
 }
 
 .section-title {
@@ -141,6 +143,8 @@ section {
   padding: 25px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .card img {
@@ -168,6 +172,8 @@ section {
 }
 
 .buy-btn {
+  pointer-events: auto;
+  cursor: pointer;
   background: var(--success);
   color: #fff;
   padding: 10px 22px;

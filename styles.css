@@ -177,8 +177,8 @@ section {
 
 /* FOOTER */
 footer {
-  background: var(--primary);
-  color: #CBD5E1;
+  background: linear-gradient(to right,#6F4E37, #87CEEB);
+  color: #FFFFFF;
   padding: 50px 0;
   text-align: center;
 }

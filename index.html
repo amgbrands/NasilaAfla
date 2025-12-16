@@ -166,6 +166,33 @@
     header.classList.toggle('scrolled', window.scrollY > 50);
   });
 </script>
+<script>
+      let cartCount = 0;
+      let cartTotal = 0;
+
+      const cartBtn = document.querySelectorAll('.buy-btn');
+      const cartDisplay = document.getElementById('cart-count');
+      const cartFloat = document.getElementById('cart-float');
+
+      cartBtn.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const price = parseFloat(btn.getAttribute('data-price')) || 0;
+          cartCount++;
+          cartTotal += price;
+
+          cartDisplay.textContent = cartCount;
+
+          // Optional: toast effect
+          btn.textContent = 'Added ✓';
+          setTimeout(() => { btn.textContent = 'Add to Cart'; }, 1000);
+        });
+      });
+
+      // Optional: click floating cart to alert total
+      cartFloat.addEventListener('click', () => {
+        alert(`Items in cart: ${cartCount}\nTotal: KES ${cartTotal}`);
+      });
+</script>
 
 </body>
 </html>

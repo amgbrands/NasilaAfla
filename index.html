@@ -109,19 +109,19 @@
         <img src="https://images.pexels.com/photos/3879495/pexels-photo-3879495.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Lattè Coffee" />
         <h3>Lattè Coffee</h3>
         <div class="price">Coming Soon</div>
-        <button class="buy-btn" data-price="250">Add to Cart<i class="fa-solid fa-cart-shopping"></i></button>
+        <button class="buy-btn" data-price="250" onclick="addToCart('Latte', 250)">Add to Cart<i class="fa-solid fa-cart-shopping"></i></button>
       </div>
       <div class="card">
         <img src="https://images.pexels.com/photos/4915835/pexels-photo-4915835.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Irish Coffee" />
         <h3>Irish Coffee</h3>
         <div class="price">Coming soon</div>
-        <a class="buy-btn" data-price="400">Add to Cart<i class="fa-solid fa-cart-shopping"></i></a>
+        <a class="buy-btn" data-price="400" onclick="addToCart('Irish Coffee', 400)">Add to Cart<i class="fa-solid fa-cart-shopping"></i></a>
       </div>
       <div class="card">
         <img src="https://images.pexels.com/photos/28721317/pexels-photo-28721317.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Caffè Macchiato" />
         <h3>Caffè Macchiato</h3>
         <div class="price">Coming soon</div>
-        <a class="buy-btn" data-price="800">Add to Cart<i class="fa-solid fa-cart-shopping"></i></a>
+        <a class="buy-btn" data-price="800"onclick="addToCart('Caffè Macchiato', 800)">Add to Cart<i class="fa-solid fa-cart-shopping"></i></a>
       </div>
     </div>
   </div>
@@ -150,23 +150,36 @@
   </div>
 </section>
 
-<footer id="contact">
-  <div class="container">
-    <h3>Get in Touch</h3>
+<!-- Footer -->
+<footer class="footer">
+        <div class="container">
+        <h2 style="text-align: center;">Let's Engage 💭</h2>
 
-    <div class="footer-icons">
-      <a href="mailto:nasilaafla@gmail.com"><i class="fas fa-envelope"></i></a>
-      <a href="https://wa.me/2547740736996" target="_blank"><i class="fab fa-whatsapp"></i></a>
-      <a href="tel:+254740736996"><i class="fas fa-phone"></i></a>
-      <a href="https://www.facebook.com/people/Nasila-AFLA-Youth-Club/61584834990603/" target="_blank"><i class="fab fa-facebook"></i></a>
-      <a href="https://www.instagram.com/nasilaafla/" target="_blank"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-tiktok"></i></a>
-      <a href="https://www.instagram.com/nasilaafla/" target="_blank"><i class="fas fa-map-marker-alt"></i> Shokut,Oloitoktok</a>
+        <hr class="contact-divider">
+
+        <div class="contact-container">
+            <!-- Left Side: Contact Details -->
+            <div class="contact-details">
+              <ul>
+                <li><p><strong><i class="fas fa-phone"></i></strong> +254 702 886 931 /+254 702 668 447</p></li>
+                <li><p><strong><i class="fas fa-envelope"></i></strong> nasilaafla@gmail.com</p></li>
+                <li><p><strong><i class="fas fa-map-marker-alt"></i></strong> Shokut, Oloitoktok</p></li><br>
+                <li><p><strong>Other Channels:</strong></p></li>
+              </br></ul>
+                <ul>
+                    <li><a target="_blank" href="https://www.instagram.com/nasilaafla/"><i class="fab fa-instagram"></i> Instagram</a></li>
+                    <li><a href="mailto:nasilaafla@gmail.com"><i class="fas fa-envelope"></i> Email</a></li>
+                    <li><a target="_blank" href="https://www.facebook.com/people/Nasila-AFLA-Youth-Club/61584834990603/"><i class="fab fa-facebook"></i> Facebook</a></li>
+                    <li><a target="_blank" href="#"><i class="fab fa-tiktok"></i> TikTok</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
-
-    <p class="copyright">© 2025 Nasila Afla </p>
-  </div>
+  <div class="container">
+        <p style="text-align: center;">© 2025 Nasila Afla. All Rights Reserved.</p>
+    </div>   
 </footer>
+
 
 </div>
 
@@ -255,7 +268,7 @@
 <div class="mobile-nav-toggle" id="mobileNavToggle">☰</div>
 <div class="mobile-nav" id="mobileNav">
   <a href="index.html">Home</a>
-  <a href="cart.html">Cart</a>
+  <a href="wip.html">Cart</a>
 </div>
 
 <script>
@@ -278,6 +291,61 @@
 
 <!-- Toast Notification -->
 <div id="toast"></div>
+
+<script>
+  // Ensure cart exists in localStorage
+  let cart = JSON.parse(localStorage.getItem('cart')) || {};
+
+  // Initialize cart count
+  let cartCount = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+  updateCartBadge();
+
+  // Add to cart function
+  function addToCart(name, price) {
+    if (!cart[name]) {
+      cart[name] = { price, qty: 1 };
+    } else {
+      cart[name].qty++;
+    }
+
+    // Update count
+    cartCount = Object.values(cart).reduce((sum, item) => sum + item.qty, 0);
+    updateCartBadge();
+
+    // Persist cart
+    localStorage.setItem('cart', JSON.stringify(cart));
+
+    // Toast notification
+    showToast(`${name} added to Order!`);
+  }
+
+  function updateCartBadge() {
+    document.getElementById('cartCount').innerText = cartCount;
+  }
+
+  function goToCart() {
+    window.location.href = 'cart.html';
+  }
+
+  function showToast(message) {
+    const toast = document.getElementById('toast');
+    toast.innerText = message;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // Bind all store buttons
+  const buttons = document.querySelectorAll('.buy-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card = btn.closest('.card');
+      const name = card.querySelector('h3').innerText;
+      const price = parseInt(btn.dataset.price);
+      addToCart(name, price);
+    });
+  });
+</script>
+
 
 </body>
 </html>

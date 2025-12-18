@@ -12,6 +12,7 @@
   --text-main: #0F172A;
   --text-muted: #475569;
   --success: #16A34A;
+  --danger: #DC2626;
 }
 
 body {
@@ -37,9 +38,11 @@ a {
   margin: auto;
 }
 
-/* NAVBAR */
+/* =======================
+   NAVBAR
+======================= */
 header {
-  background: linear-gradient(to right,#87CEEB, #6F4E37 );
+  background: linear-gradient(to right, #87CEEB, #6F4E37);
   position: sticky;
   top: 0;
   z-index: 10;
@@ -48,7 +51,12 @@ header {
 }
 
 header.scrolled {
-  background: linear-gradient(19deg,rgba(33, 131, 173, 1) 8%, rgba(230, 116, 30, 1) 50%, rgba(56, 112, 140, 1) 89%);
+  background: linear-gradient(
+    19deg,
+    rgba(33,131,173,1) 8%,
+    rgba(230,116,30,1) 50%,
+    rgba(56,112,140,1) 89%
+  );
 }
 
 nav {
@@ -66,25 +74,24 @@ nav {
 
 .nav-links a {
   margin-left: 25px;
-  font-size: 1.0rem;
+  font-size: 1rem;
   color: #FFFFFF;
 }
 
-/* HERO */
+/* =======================
+   HERO
+======================= */
 .hero {
   min-height: 90vh;
   display: flex;
   align-items: center;
-
   color: #fff;
   background:
     linear-gradient(rgba(15,23,42,0.6), rgba(15,23,42,0.6)),
     url('https://images.pexels.com/photos/15904775/pexels-photo-15904775.jpeg');
-
   background-size: cover;
   background-position: center;
 }
-
 
 .hero-content {
   animation: fadeUp 1s ease forwards;
@@ -114,9 +121,12 @@ nav {
   display: inline-block;
 }
 
-/* BACKGROUND WRAPPER */
+/* =======================
+   BACKGROUND WRAPPER
+======================= */
 .coffee-bg {
-  background: url('https://images.pexels.com/photos/3158814/pexels-photo-3158814.jpeg') center/cover fixed no-repeat;
+  background: url('https://images.pexels.com/photos/3158814/pexels-photo-3158814.jpeg')
+    center / cover fixed no-repeat;
 }
 
 section {
@@ -131,6 +141,9 @@ section {
   margin-bottom: 50px;
 }
 
+/* =======================
+   CARDS & GRIDS
+======================= */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -143,8 +156,6 @@ section {
   padding: 25px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.05);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  z-index: 1;
 }
 
 .card img {
@@ -154,6 +165,7 @@ section {
   border-radius: 12px;
   margin-bottom: 15px;
 }
+
 .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 18px 40px -8px #87CEEB;
@@ -167,24 +179,106 @@ section {
 }
 
 .price {
-  font-weight: 600;
+  font-weight: 700;
   margin: 15px 0;
 }
 
+/* =======================
+   BUTTONS
+======================= */
 .buy-btn {
-  pointer-events: auto;
   cursor: pointer;
   background: var(--success);
   color: #fff;
   padding: 10px 22px;
   border-radius: 25px;
   font-size: 0.85rem;
+  border: none;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.buy-btn:hover {
+  transform: scale(1.05);
+  opacity: 0.95;
+}
+
+/* Contact Section */
+
+.contact-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+.contact-details, .contact-form {
+  flex: 1;
+  min-width: 280px;
+}
+
+.contact-details ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.contact-details li {
+  margin: 5px 0;
+}
+
+.contact-details a {
+  text-decoration: none;
+  color: var(--text-main);
+  display: flex;
+  align-items: left;
+  gap: 8px;
+}
+
+.contact-details a img {
   display: inline-block;
 }
 
-/* FOOTER */
-footer {
+.contact-form input,
+.contact-form textarea {
+  width: 100%;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.contact-form button {
+  width: 100%;
+  padding: 12px;
+  background: var(--accent);
+  color: var(--primary);
+  font-weight: 600;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+/* Footer */
+footer.footer {
   background: linear-gradient(to right,#6F4E37, #87CEEB);
+  color: #fff;
+  text-align: left;
+  padding: 30px 0;
+  margin-top: 50px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .contact-container {
+    flex-direction: column;
+  }
+}
+
+
+/* =======================
+   FOOTER
+======================= */
+footer {
+  background: linear-gradient(to right, #6F4E37, #87CEEB);
   color: #FFFFFF;
   padding: 50px 0;
   text-align: center;
@@ -210,10 +304,69 @@ footer a:hover i {
   font-size: 0.8rem;
 }
 
+/* =======================
+   FLOATING CART
+======================= */
+.floating-cart {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #111;
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: bold;
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-/* RESPONSIVE */
+/* =======================
+   TOAST NOTIFICATION
+======================= */
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: #111;
+  color: white;
+  padding: 12px 18px;
+  border-radius: 8px;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: all 0.4s ease;
+  z-index: 1000;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =======================
+   RESPONSIVE
+======================= */
 @media (max-width: 768px) {
   .hero h1 { font-size: 2.2rem; }
   .nav-links { display: none; }
   .coffee-bg { background-attachment: scroll; }
+}
+
+.wip-section {
+  min-height: 100vh; /* full viewport height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff; /* ensures text is readable */
+  padding: 0 20px;
+
+  /* background image */
+  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
+              url('https://images.pexels.com/photos/6764282/pexels-photo-6764282.jpeg?auto=compress&cs=tinysrgb&w=600');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

@@ -9,333 +9,453 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css" />
 
-  <style>
-    body { padding-top: 90px; }
-
-    .cart-container {
-      width: 90%;
-      max-width: 1100px;
-      margin: auto;
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      gap: 40px;
-    }
-
-    .cart-item {
-      background: #fff;
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 20px;
-      display: grid;
-      grid-template-columns: 1fr auto auto auto;
-      align-items: center;
-      gap: 15px;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.05);
-    }
-
-    .qty {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .qty button {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      border: none;
-      background: var(--accent);
-      cursor: pointer;
-      font-weight: bold;
-    }
-
-    .summary {
-      background: var(--primary);
-      color: #fff;
-      border-radius: 18px;
-      padding: 25px;
-      position: sticky;
-      top: 110px;
-      height: fit-content;
-    }
-
-    .summary p {
-      display: flex;
-      justify-content: space-between;
-      margin: 15px 0;
-    }
-
-    .summary hr { border-color: rgba(255,255,255,0.2); }
-
-    .checkout {
-      margin-top: 15px;
-      width: 100%;
-      padding: 14px;
-      background: var(--accent);
-      border: none;
-      border-radius: 30px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .clear-btn {
-      margin-top: 10px;
-      width: 100%;
-      padding: 12px;
-      background: transparent;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.4);
-      border-radius: 30px;
-      cursor: pointer;
-    }
-
-    @media(max-width: 768px) {
-      .cart-container { grid-template-columns: 1fr; }
-    }
-  </style>
-
-  <!-- Prevent caching -->
+  <!-- No caching -->
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
-
 </head>
 <body>
-
-<header id="navbar">
-  <div class="container">
-    <nav>
-      <div class="logo">Nasila Afla Self Help Group</div>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="index.html#projects">Projects</a>
-        <a href="index.html#store">Store</a>
-        <a href="index.html#team">Team</a>
-        <a href="cart.html">Cart</a>
-      </div>
-    </nav>
-  </div>
-</header>
-
-<div class="cart-container">
-
-  <div>
-    <h2>Your Order</h2>
-    <div id="cart-items"></div>
-  </div>
-
-  <div class="summary">
-    <h3>Payment Summary</h3>
-    <p><span>Subtotal</span><span id="subtotal">KES 0</span></p>
-    <hr />
-    <p><strong>Total</strong><strong id="total">KES 0</strong></p>
-
-    <h4 style="margin-top:25px">Payment Details</h4>
-    <p>M-PESA Number:<br><strong>+254702171437</strong></p>
-    <p>M-PESA Till:<br><strong>3358164</strong></p>
-
-    <button class="checkout" onclick="placeOrder()">Place Order</button>
-    <button class="clear-btn" onclick="clearOrder()">Clear Order</button>
-  </div>
-
-</div>
-
- <script>
-  // Reset cart only on first page load if cart is empty
-  let initialCart = JSON.parse(localStorage.getItem('cart')) || [];
-  const products = [
-    { name: 'Latte', price: 250 },
-    { name: 'Irish Coffee', price: 300 },
-    { name: 'Caffè Macchiato', price: 280 }
-  ];
-
-  if (initialCart.length === 0) {
-    products.forEach(p => initialCart.push({ ...p, qty: 0 }));
-    localStorage.setItem('cart', JSON.stringify(initialCart));
-  }
-
-  let cart = JSON.parse(localStorage.getItem('cart')) || initialCart;
-
-  const cartContainer = document.getElementById('cart-items');
-  const subtotalEl = document.getElementById('subtotal');
-  const totalEl = document.getElementById('total');
-
-  function renderCart() {
-    cartContainer.innerHTML = '';
-    let subtotal = 0;
-
-    cart.forEach((item, index) => {
-      subtotal += item.price * item.qty;
-
-      const div = document.createElement('div');
-      div.className = 'cart-item';
-      div.innerHTML = ` 
-        <h4>${item.name}</h4>
-        <span>KES ${item.price}</span>
-        <div class="qty">
-          <button onclick="updateQty(${index}, -1)">−</button>
-          <input type='number' min='0' value='${item.qty}' style='width:50px;text-align:center;' onchange='manualQty(${index}, this.value)'>
-          <button onclick="updateQty(${index}, 1)">+</button>
+  <header id="navbar">
+    <div class="container">
+      <nav>
+        <div class="logo">Nasila Afla</div>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="index.html#store">Store</a>
+          <a href="index.html#collaborations">Collaborations</a>
+          <a href="index.html#contact">Contact</a>
+          <!-- Cart icon in navigation -->
+          <a href="cart.html" class="nav-cart active">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="nav-cart-count" id="navCartCount">0</span>
+          </a>
         </div>
-        <strong>KES ${item.price * item.qty}</strong>
-      `;
-      cartContainer.appendChild(div);
-    });
+      </nav>
+    </div>
+  </header>
 
-    subtotalEl.textContent = `KES ${subtotal}`;
-    totalEl.innerHTML = `<strong>KES ${subtotal}</strong>`;
+  <main class="cart-page">
+    <div class="container">
+      <div class="section-title">
+        <h2>Your Order</h2>
+        <p>Review and manage your items</p>
+      </div>
 
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }
+      <div class="cart-container">
+        <div class="cart-items-container">
+          <h2>Shopping Cart</h2>
+          <div id="cart-items">
+            <!-- Cart items will be rendered here -->
+          </div>
+          
+          <div id="empty-cart-message" class="empty-cart" style="display: none;">
+            <i class="fas fa-shopping-cart fa-3x"></i>
+            <h3>Your cart is empty</h3>
+            <p>Looks like you haven't added any items to your cart yet.</p>
+            <a href="index.html#store" class="btn">Browse Store</a>
+          </div>
+        </div>
 
-  function updateQty(index, change) {
-    cart[index].qty = Math.max(0, cart[index].qty + change);
-    renderCart();
-  }
+        <div class="cart-summary">
+          <h3><i class="fas fa-receipt"></i> Order Summary</h3>
+          
+          <div class="summary-item">
+            <span>Subtotal</span>
+            <span id="subtotal">KES 0</span>
+          </div>
+          
+          <div class="summary-item">
+            <span>Items</span>
+            <span id="item-count">0</span>
+          </div>
+          
+          <div class="summary-item">
+            <span>Shipping</span>
+            <span>KES 0</span>
+          </div>
+          
+          <div class="summary-total">
+            <span>Total Amount</span>
+            <span id="total">KES 0</span>
+          </div>
 
-  function manualQty(index, value) {
-    let val = parseInt(value);
-    if (isNaN(val) || val < 0) val = 0;
-    cart[index].qty = val;
-    renderCart();
-  }
+          <div class="payment-info">
+            <h4><i class="fas fa-credit-card"></i> Payment Details</h4>
+            <p><strong>M-PESA Number:</strong><br>+254 702 171 437</p>
+            <p><strong>M-PESA Till:</strong><br>3358164</p>
+            <p><small><i class="fas fa-info-circle"></i> Please use your name as reference</small></p>
+          </div>
 
-  function clearOrder() {
-    if (confirm('Are you sure you want to reset all orders?')) {
-      cart.forEach(item => item.qty = 0);
+          <button class="checkout-btn" onclick="placeOrder()">
+            <i class="fas fa-paper-plane"></i> Place Order
+          </button>
+          <button class="clear-btn" onclick="clearCart()">
+            <i class="fas fa-trash"></i> Clear Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Order Confirmation Modal -->
+  <div id="orderModal" class="modal-overlay">
+    <div class="modal">
+      <h2><i class="fas fa-check-circle" style="color: var(--success);"></i> Order Placed!</h2>
+      <p>Thank you for your order! We'll prepare it right away.</p>
+      
+      <div id="orderDetails" style="text-align: left; background: var(--background); padding: 20px; border-radius: 10px; margin: 20px 0;">
+        <!-- Order details will go here -->
+      </div>
+      
+      <p><strong>Total: <span id="modalTotal">KES 0</span></strong></p>
+      <p>Please send payment to:</p>
+      <p><strong>M-PESA: +254 702 171 437</strong><br>
+         <strong>Till: 3358164</strong></p>
+      
+      <button class="modal-close" onclick="closeModal()">
+        <i class="fas fa-times"></i> Close
+      </button>
+    </div>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i class="fas fa-check"></i>
+    <span id="toast-message"></span>
+  </div>
+
+  <!-- Floating Cart -->
+  <div class="floating-cart" onclick="window.location.href='cart.html'">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-count" id="cartCount">0</span>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav-toggle" id="mobileNavToggle">
+    <i class="fas fa-bars"></i>
+  </div>
+  
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="index.html#store"><i class="fas fa-store"></i> Store</a>
+    <a href="cart.html" class="mobile-nav-cart">
+      <span><i class="fas fa-shopping-cart"></i> Cart</span>
+      <span class="mobile-nav-cart-count" id="mobileCartCount">0</span>
+    </a>
+    <a href="wip.html"><i class="fas fa-cogs"></i> WIP</a>
+    <a href="index.html#contact"><i class="fas fa-envelope"></i> Contact</a>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Nasila Afla</h3>
+          <p>More than coffee. A creative and digital hub empowering youth through technology and community.</p>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/nasilaafla/" target="_blank">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.facebook.com/people/Nasila-AFLA-Youth-Club/61584834990603/" target="_blank">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="mailto:nasilaafla@gmail.com">
+              <i class="fas fa-envelope"></i>
+            </a>
+            <a href="#">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html#about"><i class="fas fa-chevron-right"></i> About Us</a></li>
+            <li><a href="index.html#projects"><i class="fas fa-chevron-right"></i> Projects</a></li>
+            <li><a href="index.html#store"><i class="fas fa-chevron-right"></i> Store</a></li>
+            <li><a href="index.html#collaborations"><i class="fas fa-chevron-right"></i> Collaborations</a></li>
+            <li><a href="index.html#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Contact Info</h3>
+          <ul>
+            <li><i class="fas fa-map-marker-alt"></i> Shokut, Oloitoktok</li>
+            <li><i class="fas fa-phone"></i> +254 702 886 931</li>
+            <li><i class="fas fa-phone"></i> +254 702 668 447</li>
+            <li><i class="fas fa-envelope"></i> nasilaafla@gmail.com</li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Business Hours</h3>
+          <ul>
+            <li>Monday - Friday: 8:00 AM - 6:00 PM</li>
+            <li>Saturday: 9:00 AM - 4:00 PM</li>
+            <li>Sunday: 10:00 AM - 3:00 PM</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Nasila Afla Self Help Group. All Rights Reserved.</p>
+        <p>Empowering youth through coffee, creativity, and technology.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Cart Management
+    let cart = JSON.parse(localStorage.getItem('cart')) || {};
+    
+    // Products available in store
+    const products = {
+      'Latte': { price: 250, image: 'https://images.pexels.com/photos/3879495/pexels-photo-3879495.jpeg' },
+      'Irish Coffee': { price: 300, image: 'https://images.pexels.com/photos/4915835/pexels-photo-4915835.jpeg' },
+      'Caffè Macchiato': { price: 280, image: 'https://images.pexels.com/photos/28721317/pexels-photo-28721317.jpeg' }
+    };
+
+    // Update all cart counts
+    function updateCartCounts() {
+      const count = Object.values(cart).reduce((sum, item) => sum + (item.quantity || 0), 0);
+      
+      // Update navigation cart
+      const navCartCount = document.getElementById('navCartCount');
+      if (navCartCount) {
+        navCartCount.textContent = count;
+      }
+      
+      // Update floating cart
+      const floatingCartCount = document.getElementById('cartCount');
+      if (floatingCartCount) {
+        floatingCartCount.textContent = count;
+      }
+      
+      // Update mobile nav cart
+      const mobileCartCount = document.getElementById('mobileCartCount');
+      if (mobileCartCount) {
+        mobileCartCount.textContent = count;
+      }
+    }
+
+    // Render cart items
+    function renderCart() {
+      const cartContainer = document.getElementById('cart-items');
+      const emptyMessage = document.getElementById('empty-cart-message');
+      const cartItems = Object.entries(cart);
+      
+      if (cartItems.length === 0) {
+        cartContainer.innerHTML = '';
+        emptyMessage.style.display = 'block';
+        updateSummary();
+        updateCartCounts();
+        return;
+      }
+      
+      emptyMessage.style.display = 'none';
+      
+      cartContainer.innerHTML = cartItems.map(([name, item]) => `
+        <div class="cart-item" data-name="${name}">
+          <div>
+            <h4>${name}</h4>
+            <p class="item-price">KES ${item.price}</p>
+          </div>
+          
+          <div class="quantity-controls">
+            <button class="qty-btn" onclick="updateQuantity('${name}', -1)">-</button>
+            <input type="number" 
+                   class="qty-input" 
+                   value="${item.quantity}" 
+                   min="0" 
+                   onchange="setQuantity('${name}', this.value)">
+            <button class="qty-btn" onclick="updateQuantity('${name}', 1)">+</button>
+          </div>
+          
+          <div class="item-total">
+            <strong>KES ${item.price * item.quantity}</strong>
+          </div>
+          
+          <button class="remove-btn" onclick="removeItem('${name}')">
+            <i class="fas fa-trash"></i> Remove
+          </button>
+        </div>
+      `).join('');
+      
+      updateSummary();
+      updateCartCounts();
+    }
+
+    // Update quantity
+    function updateQuantity(name, change) {
+      if (!cart[name]) return;
+      
+      cart[name].quantity = Math.max(0, cart[name].quantity + change);
+      
+      if (cart[name].quantity === 0) {
+        delete cart[name];
+      }
+      
+      saveCart();
+      renderCart();
+      showToast(`${name} quantity updated`);
+    }
+
+    // Set quantity manually
+    function setQuantity(name, value) {
+      const quantity = parseInt(value) || 0;
+      
+      if (quantity <= 0) {
+        delete cart[name];
+      } else {
+        cart[name].quantity = quantity;
+      }
+      
+      saveCart();
       renderCart();
     }
-  }
 
-  function placeOrder() {
-    const total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
-
-    if (total === 0) {
-      alert('Your cart is empty. Add something tasty first ☕');
-      return;
+    // Remove item from cart
+    function removeItem(name) {
+      if (confirm(`Remove ${name} from cart?`)) {
+        delete cart[name];
+        saveCart();
+        renderCart();
+        showToast(`${name} removed from cart`);
+      }
     }
 
-    // Create modal elements
-    const modalBg = document.createElement('div');
-    modalBg.style.position = 'fixed';
-    modalBg.style.top = 0;
-    modalBg.style.left = 0;
-    modalBg.style.width = '100%';
-    modalBg.style.height = '100%';
-    modalBg.style.background = 'rgba(0,0,0,0.6)';
-    modalBg.style.display = 'flex';
-    modalBg.style.alignItems = 'center';
-    modalBg.style.justifyContent = 'center';
-    modalBg.style.zIndex = 1000;
-
-    const modalContent = document.createElement('div');
-    modalContent.style.background = '#fff';
-    modalContent.style.padding = '30px';
-    modalContent.style.borderRadius = '16px';
-    modalContent.style.maxWidth = '400px';
-    modalContent.style.textAlign = 'center';
-    modalContent.style.fontFamily = 'Poppins, sans-serif';
-
-    modalContent.innerHTML = `
-      <h2>Hey there 👋</h2>
-      <p>Thank you for your order!</p>
-      <p><strong style="font-size:1.2rem">Total Payable: KES ${total}</strong></p>
-      <p>Kindly pay using any of the options below:</p>
-      <p>M-PESA Number: <strong>+254702171437</strong><br>M-PESA Till: <strong>3358164</strong></p>
-      <button id="closeModal" style="margin-top:15px;padding:12px 24px;border:none;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;cursor:pointer;">Close</button>
-    `;
-
-    modalBg.appendChild(modalContent);
-    document.body.appendChild(modalBg);
-
-    // Only reset cart when user closes modal
-    document.getElementById('closeModal').onclick = () => {
-      document.body.removeChild(modalBg);
-      clearOrder();
-    };
-  }
-
-  // Confirm before leaving page and retain cart values
-  window.onbeforeunload = function(e) {
-    if (cart.some(item => item.qty > 0)) {
-      e.preventDefault();
-      e.returnValue = 'You have items in your cart. Are you sure you want to leave?';
+    // Clear entire cart
+    function clearCart() {
+      if (Object.keys(cart).length === 0) {
+        showToast('Cart is already empty');
+        return;
+      }
+      
+      if (confirm('Clear all items from cart?')) {
+        cart = {};
+        saveCart();
+        renderCart();
+        showToast('Cart cleared');
+      }
     }
-  };
 
-  renderCart();
-</script>
-
-<style>
-/* Floating mobile nav button */
-.mobile-nav-toggle {
-  display: none;
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  width: 50px;
-  height: 50px;
-  background: var(--primary);
-  color: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.5rem;
-  z-index: 100;
-  cursor: pointer;
-}
-
-.mobile-nav {
-  display: none;
-  position: fixed;
-  bottom: 80px;
-  right: 20px;
-  background: var(--primary);
-  border-radius: 12px;
-  flex-direction: column;
-  padding: 10px;
-  gap: 10px;
-  z-index: 100;
-}
-
-.mobile-nav a {
-  color: white;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 8px;
-  background: var(--accent);
-  text-align: center;
-}
-
-@media (max-width: 768px) {
-  .mobile-nav-toggle {
-    display: flex;
-  }
-}
-</style>
-
-<!-- Floating mobile nav button -->
-<div class="mobile-nav-toggle" id="mobileNavToggle">☰</div>
-<div class="mobile-nav" id="mobileNav">
-  <a href="index.html">Home</a>
-  <a href="cart.html">Cart</a>
-   <a href="wip.html">WIP</a>
-</div>
-
-<script>
-  const mobileToggle = document.getElementById('mobileNavToggle');
-  const mobileNav = document.getElementById('mobileNav');
-
-  mobileToggle.addEventListener('click', () => {
-    if (mobileNav.style.display === 'flex') {
-      mobileNav.style.display = 'none';
-    } else {
-      mobileNav.style.display = 'flex';
+    // Update order summary
+    function updateSummary() {
+      const items = Object.values(cart);
+      const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+      
+      document.getElementById('subtotal').textContent = `KES ${subtotal}`;
+      document.getElementById('item-count').textContent = itemCount;
+      document.getElementById('total').textContent = `KES ${subtotal}`;
     }
-  });
-</script>
 
+    // Place order
+    function placeOrder() {
+      const items = Object.values(cart);
+      
+      if (items.length === 0) {
+        showToast('Add items to your cart first');
+        return;
+      }
+      
+      const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      
+      // Update modal with order details
+      const orderDetails = document.getElementById('orderDetails');
+      orderDetails.innerHTML = items.map(item => `
+        <div style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #eee;">
+          <div style="display: flex; justify-content: space-between;">
+            <span>${item.name} × ${item.quantity}</span>
+            <span>KES ${item.price * item.quantity}</span>
+          </div>
+        </div>
+      `).join('');
+      
+      document.getElementById('modalTotal').textContent = `KES ${total}`;
+      
+      // Show modal
+      document.getElementById('orderModal').classList.add('active');
+    }
 
+    // Close modal
+    function closeModal() {
+      document.getElementById('orderModal').classList.remove('active');
+    }
+
+    // Show toast notification
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toast-message');
+      
+      toastMessage.textContent = message;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+
+    // Save cart to localStorage
+    function saveCart() {
+      localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    // Mobile navigation toggle
+    document.getElementById('mobileNavToggle').addEventListener('click', function() {
+      const mobileNav = document.getElementById('mobileNav');
+      mobileNav.style.display = mobileNav.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    // Close mobile nav when clicking outside
+    document.addEventListener('click', function(event) {
+      const mobileNav = document.getElementById('mobileNav');
+      const toggleBtn = document.getElementById('mobileNavToggle');
+      
+      if (mobileNav && toggleBtn) {
+        if (!mobileNav.contains(event.target) && !toggleBtn.contains(event.target)) {
+          mobileNav.style.display = 'none';
+        }
+      }
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load cart from localStorage
+      const savedCart = JSON.parse(localStorage.getItem('cart')) || {};
+      
+      // Convert old cart format if needed
+      if (Array.isArray(savedCart)) {
+        cart = {};
+        savedCart.forEach(item => {
+          if (item.name) {
+            cart[item.name] = {
+              price: item.price || products[item.name]?.price || 0,
+              quantity: item.qty || 1
+            };
+          }
+        });
+      } else {
+        cart = savedCart;
+      }
+      
+      renderCart();
+      updateCartCounts();
+      
+      // Header scroll effect
+      const header = document.getElementById('navbar');
+      window.addEventListener('scroll', () => {
+        header.classList.toggle('scrolled', window.scrollY > 50);
+      });
+    });
+
+    // Save cart before page unload
+    window.addEventListener('beforeunload', function() {
+      saveCart();
+    });
+  </script>
 </body>
 </html>

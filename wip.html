@@ -3,33 +3,183 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Cart | Nasila Afla</title>
+  <title>Work in Progress | Nasila Afla</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="styles.css" />
-
 </head>
-<header id="navbar">
-  <div class="container">
-    <nav>
-      <div class="logo">Nasila Afla </div>
-      <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="index.html#projects">Projects</a>
-        <a href="index.html#store">Store</a>
-        <a href="index.html#team">Team</a>
-        <a href="cart.html">Cart</a>
-      </div>
-    </nav>
-  </div>
-</header>
 <body>
-<section class="wip-section">
-  <div class="container">
-    <h1>Work In Progress</h1>
-    <p>We're working hard to bring you new and exciting features. Stay tuned!</p>
-  </div>
-</section>
+  <header id="navbar">
+    <div class="container">
+      <nav>
+        <div class="logo">Nasila Afla</div>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="index.html#projects">Projects</a>
+          <a href="index.html#store">Store</a>
+          <a href="index.html#collaborations">Collaborations</a>
+          <a href="index.html#contact">Contact</a>
+          <!-- Cart icon in navigation -->
+          <a href="cart.html" class="nav-cart">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="nav-cart-count" id="navCartCount">0</span>
+          </a>
+        </div>
+      </nav>
+    </div>
+  </header>
 
+  <section class="wip-section">
+    <div class="container">
+      <h1><i class="fas fa-tools"></i> Work in Progress</h1>
+      <p>We're working hard to bring you new and exciting features. Our team is currently developing amazing additions to enhance your experience.</p>
+      <p>Stay tuned for updates!</p>
+      <a href="index.html" class="btn">Return to Home</a>
+    </div>
+  </section>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast">
+    <i class="fas fa-check"></i>
+    <span id="toast-message"></span>
+  </div>
+
+  <!-- Floating Cart -->
+  <div class="floating-cart" onclick="window.location.href='cart.html'">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-count" id="cartCount">0</span>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <div class="mobile-nav-toggle" id="mobileNavToggle">
+    <i class="fas fa-bars"></i>
+  </div>
+  
+  <div class="mobile-nav" id="mobileNav">
+    <a href="index.html"><i class="fas fa-home"></i> Home</a>
+    <a href="index.html#store"><i class="fas fa-store"></i> Store</a>
+    <a href="cart.html" class="mobile-nav-cart">
+      <span><i class="fas fa-shopping-cart"></i> Cart</span>
+      <span class="mobile-nav-cart-count" id="mobileCartCount">0</span>
+    </a>
+    <a href="wip.html"><i class="fas fa-cogs"></i> WIP</a>
+    <a href="index.html#contact"><i class="fas fa-envelope"></i> Contact</a>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>Nasila Afla</h3>
+          <p>More than coffee. A creative and digital hub empowering youth through technology and community.</p>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/nasilaafla/" target="_blank">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.facebook.com/people/Nasila-AFLA-Youth-Club/61584834990603/" target="_blank">
+              <i class="fab fa-facebook-f"></i>
+            </a>
+            <a href="mailto:nasilaafla@gmail.com">
+              <i class="fas fa-envelope"></i>
+            </a>
+            <a href="#">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-section">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="index.html#about"><i class="fas fa-chevron-right"></i> About Us</a></li>
+            <li><a href="index.html#projects"><i class="fas fa-chevron-right"></i> Projects</a></li>
+            <li><a href="index.html#store"><i class="fas fa-chevron-right"></i> Store</a></li>
+            <li><a href="index.html#collaborations"><i class="fas fa-chevron-right"></i> Collaborations</a></li>
+            <li><a href="index.html#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Contact Info</h3>
+          <ul>
+            <li><i class="fas fa-map-marker-alt"></i> Shokut, Oloitoktok</li>
+            <li><i class="fas fa-phone"></i> +254 702 886 931</li>
+            <li><i class="fas fa-phone"></i> +254 702 668 447</li>
+            <li><i class="fas fa-envelope"></i> nasilaafla@gmail.com</li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h3>Business Hours</h3>
+          <ul>
+            <li>Monday - Friday: 8:00 AM - 6:00 PM</li>
+            <li>Saturday: 9:00 AM - 4:00 PM</li>
+            <li>Sunday: 10:00 AM - 3:00 PM</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Nasila Afla Self Help Group. All Rights Reserved.</p>
+        <p>Empowering youth through coffee, creativity, and technology.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Update cart counts
+    function updateCartCounts() {
+      const cart = JSON.parse(localStorage.getItem('cart')) || {};
+      const count = Object.values(cart).reduce((sum, item) => sum + (item.quantity || 0), 0);
+      
+      // Update navigation cart
+      const navCartCount = document.getElementById('navCartCount');
+      if (navCartCount) {
+        navCartCount.textContent = count;
+      }
+      
+      // Update floating cart
+      const floatingCartCount = document.getElementById('cartCount');
+      if (floatingCartCount) {
+        floatingCartCount.textContent = count;
+      }
+      
+      // Update mobile nav cart
+      const mobileCartCount = document.getElementById('mobileCartCount');
+      if (mobileCartCount) {
+        mobileCartCount.textContent = count;
+      }
+    }
+
+    // Mobile navigation toggle
+    document.getElementById('mobileNavToggle').addEventListener('click', function() {
+      const mobileNav = document.getElementById('mobileNav');
+      mobileNav.style.display = mobileNav.style.display === 'flex' ? 'none' : 'flex';
+    });
+
+    // Close mobile nav when clicking outside
+    document.addEventListener('click', function(event) {
+      const mobileNav = document.getElementById('mobileNav');
+      const toggleBtn = document.getElementById('mobileNavToggle');
+      
+      if (mobileNav && toggleBtn) {
+        if (!mobileNav.contains(event.target) && !toggleBtn.contains(event.target)) {
+          mobileNav.style.display = 'none';
+        }
+      }
+    });
+
+    // Header scroll effect
+    const header = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      updateCartCounts();
+    });
+  </script>
 </body>
+</html>

@@ -174,68 +174,71 @@
         </div>
       </section>
 
-      <section id="contact">
-        <div class="container">
-          <div class="section-title">
-            <h2>Contact Us</h2>
-            <p>Get in touch with our team</p>
-          </div>
+<section id="contact">
+  <div class="container">
+    <div class="section-title">
+      <h2>Contact Us</h2>
+      <p>Get in touch with our team</p>
+    </div>
 
-          <div class="contact-container">
-            <div class="contact-details">
-              <h3><i class="fas fa-map-marker-alt"></i> Our Location</h3>
-              <p>Shokut, Oloitoktok, Kenya</p>
-              
-              <h3 style="margin-top: 30px;"><i class="fas fa-phone"></i> Contact Numbers</h3>
-              <p>+254 702 886 931</p>
-              <p>+254 702 668 447</p>
-              
-              <h3 style="margin-top: 30px;"><i class="fas fa-envelope"></i> Email</h3>
-              <p>nasilaafla@gmail.com</p>
-              
-              <h3 style="margin-top: 30px;"><i class="fas fa-share-alt"></i> Connect With Us</h3>
-              <div class="social-icons">
-                <a href="https://www.instagram.com/nasilaafla/" target="_blank" title="Instagram">
-                  <i class="fab fa-instagram"></i>
-                </a>
-                <a href="mailto:nasilaafla@gmail.com" title="Email">
-                  <i class="fas fa-envelope"></i>
-                </a>
-                <a href="https://www.facebook.com/people/Nasila-AFLA-Youth-Club/61584834990603/" target="_blank" title="Facebook">
-                  <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#" title="TikTok">
-                  <i class="fab fa-tiktok"></i>
-                </a>
-                <a href="#" title="Twitter">
-                  <i class="fab fa-twitter"></i>
-                </a>
-              </div>
-            </div>
-
-            <div class="contact-form">
-              <h3><i class="fas fa-paper-plane"></i> Send us a Message</h3>
-              <form id="contactForm">
-                <div class="form-group">
-                  <input type="text" placeholder="Your Name" required>
-                </div>
-                <div class="form-group">
-                  <input type="email" placeholder="Your Email" required>
-                </div>
-                <div class="form-group">
-                  <input type="text" placeholder="Subject" required>
-                </div>
-                <div class="form-group">
-                  <textarea placeholder="Your Message" rows="5" required></textarea>
-                </div>
-                <button type="submit" class="submit-btn">
-                  <i class="fas fa-paper-plane"></i> Send Message
-                </button>
-              </form>
-            </div>
-          </div>
+    <div class="contact-container">
+      <div class="contact-details">
+        <h3><i class="fas fa-map-marker-alt"></i> Our Location</h3>
+        <p>Shokut, Oloitoktok, Kenya</p>
+        
+        <h3 style="margin-top: 30px;"><i class="fas fa-phone"></i> Contact Numbers</h3>
+        <p>+254 702 886 931</p>
+        <p>+254 702 668 447</p>
+        
+        <h3 style="margin-top: 30px;"><i class="fas fa-envelope"></i> Email</h3>
+        <p>nasilaafla@gmail.com</p>
+        
+        <h3 style="margin-top: 30px;"><i class="fas fa-share-alt"></i> Connect With Us</h3>
+        <div class="social-icons">
+          <a href="https://www.instagram.com/nasilaafla/" target="_blank" title="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="mailto:nasilaafla@gmail.com" title="Email">
+            <i class="fas fa-envelope"></i>
+          </a>
+          <a href="https://www.facebook.com/people/Nasila-AFLA-Youth-Club/61584834990603/" target="_blank" title="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="#" title="TikTok">
+            <i class="fab fa-tiktok"></i>
+          </a>
+          <a href="#" title="Twitter">
+            <i class="fab fa-twitter"></i>
+          </a>
         </div>
-      </section>
+      </div>
+
+      <div class="contact-form">
+        <h3><i class="fas fa-paper-plane"></i> Send us a Message</h3>
+        <form id="contactForm">
+          <div class="form-group">
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+          </div>
+          <div class="form-group">
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+          </div>
+          <div class="form-group">
+            <input type="tel" id="phone" name="phone" placeholder="Your Phone Number" required>
+          </div>
+          <div class="form-group">
+            <input type="text" id="subject" name="subject" placeholder="Subject" required>
+          </div>
+          <div class="form-group">
+            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+          </div>
+          <button type="submit" class="submit-btn">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
     </div>
   </main>
 
@@ -386,11 +389,34 @@
     }
     
     // Handle contact form submission
-    document.getElementById('contactForm')?.addEventListener('submit', function(e) {
-      e.preventDefault();
-      showToast('Message sent successfully! We\'ll get back to you soon.');
-      this.reset();
-    });
+document.getElementById('contactForm')?.addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  // Get form data
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const phone = document.getElementById('phone').value;
+  const subject = document.getElementById('subject').value;
+  const message = document.getElementById('message').value;
+  
+  // Prepare email body
+  const mailtoLink = `mailto:admin@nasilaafla.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+`Name: ${name}
+Email: ${email}
+Phone: ${phone}
+
+Message:
+${message}`)}`;
+  
+  // Open email client
+  window.open(mailtoLink, '_blank');
+  
+  // Show success message
+  showToast('Opening email client to send your message...');
+  
+  // Reset form
+  this.reset();
+});
     
     // Mobile navigation toggle - FIXED POSITIONING
     const mobileToggle = document.getElementById('mobileNavToggle');

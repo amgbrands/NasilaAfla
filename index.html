@@ -120,7 +120,7 @@
               <img src="https://images.pexels.com/photos/3879495/pexels-photo-3879495.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Lattè Coffee" />
               <h3>Lattè Coffee</h3>
               <p>Smooth espresso with steamed milk</p>
-              <div class="price">KES 250</div>
+              <div class="price">Coming Soon</div>
               <button class="buy-btn" data-price="250">
                 <i class="fas fa-cart-plus"></i> Add to Cart
               </button>
@@ -129,7 +129,7 @@
               <img src="https://images.pexels.com/photos/4915835/pexels-photo-4915835.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Irish Coffee" />
               <h3>Irish Coffee</h3>
               <p>Classic coffee with a whiskey twist</p>
-              <div class="price">KES 300</div>
+              <div class="price">Coming Soon</div>
               <button class="buy-btn" data-price="300">
                 <i class="fas fa-cart-plus"></i> Add to Cart
               </button>
@@ -138,7 +138,7 @@
               <img src="https://images.pexels.com/photos/28721317/pexels-photo-28721317.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Caffè Macchiato" />
               <h3>Caffè Macchiato</h3>
               <p>Espresso "stained" with milk</p>
-              <div class="price">KES 280</div>
+              <div class="price">Coming Soon</div>
               <button class="buy-btn" data-price="280">
                 <i class="fas fa-cart-plus"></i> Add to Cart
               </button>
@@ -547,6 +547,384 @@ ${message}`)}`;
     window.addEventListener('beforeunload', function() {
       localStorage.setItem('cart', JSON.stringify(cart));
     });
+
+// Load dynamic content from admin with slider
+function loadAdminContent() {
+    // Load projects with dynamic slider
+    const projectsData = JSON.parse(localStorage.getItem('nasila_projects')) || [];
+    const projectsSection = document.getElementById('projects');
+    
+    if (projectsData.length > 0 && projectsSection) {
+        const container = projectsSection.querySelector('.container');
+        
+        // Create slider container
+        const sliderHTML = `
+            <div class="dynamic-grid-container">
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="slider">
+                        <i class="fas fa-sliders-h"></i> Slider
+                    </button>
+                    <button class="view-btn" data-view="grid">
+                        <i class="fas fa-th-large"></i> Grid
+                    </button>
+                </div>
+                
+                <div class="slider-controls">
+                    <button class="slider-btn prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-btn next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="dynamic-grid" id="projects-slider">
+                    ${projectsData.map(project => {
+                        // Detect image orientation
+                        const img = new Image();
+                        img.src = project.image;
+                        const orientation = img.width > img.height ? 'landscape' : 'portrait';
+                        
+                        return `
+                        <div class="dynamic-card ${orientation}">
+                            <img src="${project.image}" alt="${project.title}" 
+                                 onerror="this.src='https://images.pexels.com/photos/5361244/pexels-photo-5361244.jpeg?auto=compress&cs=tinysrgb&w=600'">
+                            <div class="dynamic-card-content">
+                                <h3>${project.title}</h3>
+                                <p>${project.description.substring(0, 100)}...</p>
+                                ${project.services ? `
+                                <div class="dynamic-card-services">
+                                    <ul>
+                                        ${project.services.split('\n').slice(0, 3).map(service => `<li>${service}</li>`).join('')}
+                                    </ul>
+                                </div>` : ''}
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
+                
+                <!-- Alternative masonry grid -->
+                <div class="masonry-grid" id="projects-grid" style="display: none;">
+                    ${projectsData.map(project => `
+                        <div class="masonry-item">
+                            <img src="${project.image}" alt="${project.title}" 
+                                 onerror="this.src='https://images.pexels.com/photos/5361244/pexels-photo-5361244.jpeg?auto=compress&cs=tinysrgb&w=600'">
+                            <div class="masonry-content">
+                                <h3>${project.title}</h3>
+                                <p>${project.description.substring(0, 80)}...</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="slider-indicators" id="projects-indicators">
+                    ${projectsData.map((_, index) => `
+                        <div class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        // Find and replace the projects grid
+        const oldGrid = container.querySelector('.projects-grid');
+        if (oldGrid) {
+            oldGrid.remove();
+        }
+        
+        // Insert after section title
+        const sectionTitle = container.querySelector('.section-title');
+        sectionTitle.insertAdjacentHTML('afterend', sliderHTML);
+        
+        // Initialize slider functionality
+        initProjectsSlider();
+    }
+
+    // Load store items with dynamic slider
+    const storeData = JSON.parse(localStorage.getItem('nasila_store')) || [];
+    const storeSection = document.getElementById('store');
+    
+    if (storeData.length > 0 && storeSection) {
+        const container = storeSection.querySelector('.container');
+        
+        const sliderHTML = `
+            <div class="dynamic-grid-container">
+                <div class="slider-controls">
+                    <button class="slider-btn prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-btn next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="dynamic-grid" id="store-slider">
+                    ${storeData.map(item => `
+                        <div class="dynamic-card">
+                            <img src="${item.image}" alt="${item.title}"
+                                 onerror="this.src='https://images.pexels.com/photos/3879495/pexels-photo-3879495.jpeg?auto=compress&cs=tinysrgb&w=600'">
+                            <div class="dynamic-card-content">
+                                <h3>${item.title}</h3>
+                                <p>${item.description}</p>
+                                <div class="price">KES ${item.price}</div>
+                                <button class="buy-btn" onclick="window.location.href='wip.html'">
+                                    <i class="fas fa-cart-plus"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="slider-indicators" id="store-indicators">
+                    ${storeData.map((_, index) => `
+                        <div class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        // Find and replace the store grid
+        const oldGrid = container.querySelector('.projects-grid');
+        if (oldGrid) {
+            oldGrid.remove();
+        }
+        
+        // Insert after section title
+        const sectionTitle = container.querySelector('.section-title');
+        sectionTitle.insertAdjacentHTML('afterend', sliderHTML);
+        
+        // Initialize store slider
+        initStoreSlider();
+    }
+
+    // Load collaborations with dynamic slider
+    const collaborationsData = JSON.parse(localStorage.getItem('nasila_collaborations')) || [];
+    const collaborationsSection = document.getElementById('collaborations');
+    
+    if (collaborationsData.length > 0 && collaborationsSection) {
+        const container = collaborationsSection.querySelector('.container');
+        
+        const sliderHTML = `
+            <div class="dynamic-grid-container">
+                <div class="slider-controls">
+                    <button class="slider-btn prev-btn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-btn next-btn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="dynamic-grid" id="collaborations-slider">
+                    ${collaborationsData.map(collab => `
+                        <div class="dynamic-card">
+                            <img src="${collab.image}" alt="${collab.title}"
+                                 onerror="this.src='https://images.pexels.com/photos/5499122/pexels-photo-5499122.jpeg?auto=compress&cs=tinysrgb&w=600'">
+                            <div class="dynamic-card-content">
+                                <h3>${collab.title}</h3>
+                                <p>${collab.description.substring(0, 120)}...</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div class="slider-indicators" id="collaborations-indicators">
+                    ${collaborationsData.map((_, index) => `
+                        <div class="indicator ${index === 0 ? 'active' : ''}" data-index="${index}"></div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        // Find and replace the collaborations grid
+        const oldGrid = container.querySelector('.projects-grid');
+        if (oldGrid) {
+            oldGrid.remove();
+        }
+        
+        // Insert after section title
+        const sectionTitle = container.querySelector('.section-title');
+        sectionTitle.insertAdjacentHTML('afterend', sliderHTML);
+        
+        // Initialize collaborations slider
+        initCollaborationsSlider();
+    }
+}
+
+// Initialize sliders
+function initSlider(sliderId, prevBtnClass, nextBtnClass, indicatorsId) {
+    const slider = document.getElementById(sliderId);
+    const prevBtn = slider?.closest('.dynamic-grid-container').querySelector(prevBtnClass);
+    const nextBtn = slider?.closest('.dynamic-grid-container').querySelector(nextBtnClass);
+    const indicators = document.getElementById(indicatorsId);
+    
+    if (!slider) return;
+    
+    const cardWidth = 300; // Adjust based on your card width + gap
+    let currentPosition = 0;
+    
+    // Update indicators
+    function updateIndicators() {
+        if (!indicators) return;
+        const activeIndex = Math.abs(Math.round(currentPosition / cardWidth));
+        indicators.querySelectorAll('.indicator').forEach((indicator, index) => {
+            indicator.classList.toggle('active', index === activeIndex);
+        });
+    }
+    
+    // Scroll to position
+    function scrollToPosition(position) {
+        slider.scrollTo({
+            left: position,
+            behavior: 'smooth'
+        });
+        currentPosition = position;
+        updateIndicators();
+    }
+    
+    // Next button
+    if (nextBtn) {
+        nextBtn.addEventListener('click', () => {
+            const maxScroll = slider.scrollWidth - slider.clientWidth;
+            const newPosition = Math.min(currentPosition + cardWidth * 2, maxScroll);
+            scrollToPosition(newPosition);
+        });
+    }
+    
+    // Previous button
+    if (prevBtn) {
+        prevBtn.addEventListener('click', () => {
+            const newPosition = Math.max(currentPosition - cardWidth * 2, 0);
+            scrollToPosition(newPosition);
+        });
+    }
+    
+    // Indicator clicks
+    if (indicators) {
+        indicators.querySelectorAll('.indicator').forEach((indicator, index) => {
+            indicator.addEventListener('click', () => {
+                scrollToPosition(index * cardWidth * 2);
+            });
+        });
+    }
+    
+    // Auto scroll on hover
+    slider.addEventListener('mouseenter', () => {
+        slider.style.scrollBehavior = 'smooth';
+    });
+    
+    slider.addEventListener('mouseleave', () => {
+        slider.style.scrollBehavior = 'auto';
+    });
+    
+    // Update on scroll
+    slider.addEventListener('scroll', () => {
+        currentPosition = slider.scrollLeft;
+        updateIndicators();
+    });
+    
+    // Initialize indicators
+    updateIndicators();
+}
+
+function initProjectsSlider() {
+    initSlider('projects-slider', '.prev-btn', '.next-btn', 'projects-indicators');
+    
+    // View toggle functionality
+    const viewToggle = document.querySelector('.view-toggle');
+    if (viewToggle) {
+        viewToggle.addEventListener('click', (e) => {
+            if (e.target.closest('.view-btn')) {
+                const btn = e.target.closest('.view-btn');
+                const view = btn.getAttribute('data-view');
+                
+                // Update active button
+                viewToggle.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Show/hide views
+                const slider = document.getElementById('projects-slider');
+                const grid = document.getElementById('projects-grid');
+                const controls = slider.closest('.dynamic-grid-container').querySelector('.slider-controls');
+                const indicators = document.getElementById('projects-indicators');
+                
+                if (view === 'slider') {
+                    slider.style.display = 'flex';
+                    grid.style.display = 'none';
+                    if (controls) controls.style.display = 'flex';
+                    if (indicators) indicators.style.display = 'flex';
+                } else {
+                    slider.style.display = 'none';
+                    grid.style.display = 'grid';
+                    if (controls) controls.style.display = 'none';
+                    if (indicators) indicators.style.display = 'none';
+                }
+            }
+        });
+    }
+}
+
+function initStoreSlider() {
+    initSlider('store-slider', '.prev-btn', '.next-btn', 'store-indicators');
+}
+
+function initCollaborationsSlider() {
+    initSlider('collaborations-slider', '.prev-btn', '.next-btn', 'collaborations-indicators');
+}
+
+// Auto-detect image orientation (lazy loading version)
+function detectImageOrientation(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = function() {
+            resolve(this.width > this.height ? 'landscape' : 'portrait');
+        };
+        img.onerror = function() {
+            resolve('landscape'); // Default to landscape if image fails
+        };
+        img.src = url;
+    });
+}
+
+// Enhanced card generation with orientation detection
+async function generateDynamicCards(data, type) {
+    const cards = [];
+    
+    for (const item of data) {
+        const orientation = await detectImageOrientation(item.image);
+        
+        cards.push(`
+            <div class="dynamic-card ${orientation}">
+                <img src="${item.image}" alt="${item.title}"
+                     onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                <div class="dynamic-card-content">
+                    <h3>${item.title}</h3>
+                    <p>${type === 'store' ? item.description : item.description.substring(0, 100)}...</p>
+                    ${type === 'store' ? `<div class="price">KES ${item.price}</div>` : ''}
+                    ${type === 'store' ? `
+                        <button class="buy-btn" onclick="window.location.href='wip.html'">
+                            <i class="fas fa-cart-plus"></i> Add to Cart
+                        </button>
+                    ` : ''}
+                </div>
+            </div>
+        `);
+    }
+    
+    return cards.join('');
+}
+
+// Call this function when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    loadAdminContent();
+    
+    // Also call it when admin updates content
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'nasila_projects' || e.key === 'nasila_store' || e.key === 'nasila_collaborations') {
+            loadAdminContent();
+        }
+    });
+});
   </script>
 </body>
 </html>

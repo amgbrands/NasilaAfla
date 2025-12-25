@@ -1,0 +1,1513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Nasila Afla</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e67e22;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f5f6fa;
+            color: var(--dark);
+        }
+
+        /* Header */
+        .admin-header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .admin-header h1 {
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logout-btn {
+            background: var(--danger);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #c0392b;
+        }
+
+        /* Main Layout */
+        .admin-container {
+            display: flex;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            padding: 20px 0;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 5px;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 25px;
+            color: var(--dark);
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background: var(--light);
+            border-right: 4px solid var(--accent);
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        .content-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light);
+        }
+
+        .section-header h2 {
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Forms */
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #d35400;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #2980b9;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+
+        /* Items Grid */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .item-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            position: relative;
+            border: 1px solid #eee;
+        }
+
+        .item-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .item-card h4 {
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .item-card p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .item-card .price {
+            font-weight: bold;
+            color: var(--accent);
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-btn {
+            background: var(--info);
+            color: white;
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Form validation styles */
+        .form-group input.error,
+        .form-group textarea.error {
+            border-color: var(--danger) !important;
+            background: #ffebee;
+        }
+
+        .required-asterisk {
+            color: var(--danger);
+            margin-left: 3px;
+        }
+
+        .form-help {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            display: block;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast.error {
+            background: var(--danger);
+        }
+
+        .toast.warning {
+            background: var(--warning);
+        }
+
+        .toast.info {
+            background: var(--info);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 10px 0;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+                gap: 10px;
+            }
+
+            .sidebar-menu li {
+                flex-shrink: 0;
+            }
+
+            .sidebar-menu a {
+                padding: 10px 15px;
+                white-space: nowrap;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="admin-header">
+        <h1>
+            <i class="fas fa-tachometer-alt"></i>
+            Nasila Afla Admin Dashboard
+        </h1>
+        <button class="logout-btn" id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            Logout
+        </button>
+    </header>
+
+    <!-- Main Container -->
+    <div class="admin-container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <ul class="sidebar-menu">
+                <li>
+                    <a href="#dashboard" class="active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="#projects" data-section="projects">
+                        <i class="fas fa-project-diagram"></i>
+                        Projects
+                    </a>
+                </li>
+                <li>
+                    <a href="#store" data-section="store">
+                        <i class="fas fa-store"></i>
+                        Store
+                    </a>
+                </li>
+                <li>
+                    <a href="#collaborations" data-section="collaborations">
+                        <i class="fas fa-handshake"></i>
+                        Collaborations
+                    </a>
+                </li>
+                <li>
+                    <a href="#backup" data-section="backup">
+                        <i class="fas fa-database"></i>
+                        Backup & Restore
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard-section" class="content-section active">
+                <div class="section-header">
+                    <h2><i class="fas fa-tachometer-alt"></i> Dashboard Overview</h2>
+                </div>
+
+                <div class="form-container">
+                    <h3>Quick Stats</h3>
+                    <div class="items-grid">
+                        <div class="item-card">
+                            <h4><i class="fas fa-project-diagram"></i> Projects</h4>
+                            <p id="projects-count">0 Items</p>
+                        </div>
+                        <div class="item-card">
+                            <h4><i class="fas fa-store"></i> Store Items</h4>
+                            <p id="store-count">0 Items</p>
+                        </div>
+                        <div class="item-card">
+                            <h4><i class="fas fa-handshake"></i> Collaborations</h4>
+                            <p id="collaborations-count">0 Items</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Quick Actions</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-info" onclick="showSection('projects')">
+                            <i class="fas fa-plus"></i> Add New Project
+                        </button>
+                        <button class="btn btn-info" onclick="showSection('store')">
+                            <i class="fas fa-plus"></i> Add Store Item
+                        </button>
+                        <button class="btn btn-info" onclick="showSection('collaborations')">
+                            <i class="fas fa-plus"></i> Add Collaboration
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-project-diagram"></i> Manage Projects</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="exportData('projects')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Add/Edit Project</h3>
+                    <form id="projectForm">
+                        <input type="hidden" id="project-id">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="project-title">
+                                    Project Title <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="text" id="project-title" required 
+                                       placeholder="e.g., Digital Marketing Services">
+                                <span class="form-help">Title of the project or service</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="project-image">
+                                    Image URL <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="url" id="project-image" 
+                                       placeholder="https://images.pexels.com/photo.jpg" required>
+                                <span class="form-help">Direct link to project image</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-description">
+                                Description <span class="required-asterisk">*</span>
+                            </label>
+                            <textarea id="project-description" rows="4" 
+                                      placeholder="Detailed description of the project..." required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="project-services">Services/Features (one per line)</label>
+                            <textarea id="project-services" rows="4" 
+                                      placeholder="Website design & development&#10;Digital marketing&#10;Social media management"></textarea>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Project
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="resetProjectForm()">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="items-grid" id="projects-list">
+                    <!-- Projects will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Store Section -->
+            <section id="store-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-store"></i> Manage Store Items</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="exportData('store')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Add/Edit Store Item</h3>
+                    <form id="storeForm">
+                        <input type="hidden" id="store-item-id">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="store-title">
+                                    Item Name <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="text" id="store-title" required 
+                                       placeholder="e.g., Lattè Coffee">
+                                <span class="form-help">Name of the product</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="store-price">
+                                    Price (KES) <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="number" id="store-price" min="0" step="10" 
+                                       required placeholder="250">
+                                <span class="form-help">Price in Kenyan Shillings</span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="store-image">
+                                    Image URL <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="url" id="store-image" 
+                                       placeholder="https://images.pexels.com/photo.jpg" required>
+                                <span class="form-help">Direct link to product image</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="store-description">
+                                    Short Description <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="text" id="store-description" 
+                                       placeholder="e.g., Smooth espresso with steamed milk" required>
+                                <span class="form-help">Brief description of the product</span>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Item
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="resetStoreForm()">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="items-grid" id="store-items-list">
+                    <!-- Store items will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Collaborations Section -->
+            <section id="collaborations-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-handshake"></i> Manage Collaborations</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="exportData('collaborations')">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Add/Edit Collaboration</h3>
+                    <form id="collaborationForm">
+                        <input type="hidden" id="collaboration-id">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="collaboration-title">
+                                    Title <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="text" id="collaboration-title" required 
+                                       placeholder="e.g., Youth Tech Training">
+                                <span class="form-help">Title of the collaboration</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="collaboration-image">
+                                    Image URL <span class="required-asterisk">*</span>
+                                </label>
+                                <input type="url" id="collaboration-image" 
+                                       placeholder="https://images.pexels.com/photo.jpg" required>
+                                <span class="form-help">Direct link to collaboration image</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="collaboration-description">
+                                Description <span class="required-asterisk">*</span>
+                            </label>
+                            <textarea id="collaboration-description" rows="4" 
+                                      placeholder="Detailed description of the collaboration..." required></textarea>
+                        </div>
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Collaboration
+                            </button>
+                            <button type="button" class="btn btn-danger" onclick="resetCollaborationForm()">
+                                <i class="fas fa-times"></i> Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="items-grid" id="collaborations-list">
+                    <!-- Collaborations will be loaded here -->
+                </div>
+            </section>
+
+            <!-- Backup Section -->
+            <section id="backup-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-database"></i> Backup & Restore</h2>
+                </div>
+
+                <div class="form-container">
+                    <h3>Export Data</h3>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="exportAllData()">
+                            <i class="fas fa-download"></i> Export All Data
+                        </button>
+                        <button class="btn btn-info" onclick="exportData('projects')">
+                            <i class="fas fa-project-diagram"></i> Export Projects
+                        </button>
+                        <button class="btn btn-info" onclick="exportData('store')">
+                            <i class="fas fa-store"></i> Export Store
+                        </button>
+                        <button class="btn btn-info" onclick="exportData('collaborations')">
+                            <i class="fas fa-handshake"></i> Export Collaborations
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Import Data</h3>
+                    <div class="form-group">
+                        <label for="import-file">Select JSON file to import</label>
+                        <input type="file" id="import-file" accept=".json">
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="importData()">
+                            <i class="fas fa-upload"></i> Import Data
+                        </button>
+                    </div>
+                    <p style="margin-top: 15px; color: #666; font-size: 14px;">
+                        <i class="fas fa-exclamation-triangle"></i> Warning: Importing will overwrite existing data.
+                    </p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check"></i>
+        <span id="toast-message">Operation successful</span>
+    </div>
+
+    <script>
+        // Check authentication
+        const loginTime = localStorage.getItem('loginTime');
+        const isLoggedIn = localStorage.getItem('adminLoggedIn') === 'true';
+        
+        // Check if session is valid (8 hours)
+        if (!isLoggedIn || !loginTime || (Date.now() - parseInt(loginTime)) > 8 * 60 * 60 * 1000) {
+            localStorage.removeItem('adminLoggedIn');
+            localStorage.removeItem('loginTime');
+            window.location.href = 'admin-login.html';
+        }
+
+        // Data storage keys
+        const STORAGE_KEYS = {
+            PROJECTS: 'nasila_projects',
+            STORE: 'nasila_store',
+            COLLABORATIONS: 'nasila_collaborations'
+        };
+
+        // Initialize data with default items if not exists
+        function initializeStorage() {
+            if (!localStorage.getItem(STORAGE_KEYS.PROJECTS)) {
+                // Default projects
+                const defaultProjects = [
+                    {
+                        id: 1,
+                        title: "Digital Hub",
+                        image: "https://images.pexels.com/photos/5361244/pexels-photo-5361244.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Comprehensive digital solutions for businesses",
+                        services: "Website design & development\nDigital marketing\nSocial media management\nIT consulting",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 2,
+                        title: "Women Empowerment",
+                        image: "https://images.pexels.com/photos/13033134/pexels-photo-13033134.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Supporting Maasai beadwork through fair-market access and skill development",
+                        services: "Beadwork training\nMarket access\nEntrepreneurship training",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 3,
+                        title: "Creative Arts",
+                        image: "https://images.pexels.com/photos/12632479/pexels-photo-12632479.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Music, design & storytelling platforms for youth",
+                        services: "Music production\nGraphic design\nStorytelling workshops",
+                        timestamp: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(defaultProjects));
+            }
+            
+            if (!localStorage.getItem(STORAGE_KEYS.STORE)) {
+                // Default store items
+                const defaultStore = [
+                    {
+                        id: 101,
+                        title: "Lattè Coffee",
+                        price: 250,
+                        image: "https://images.pexels.com/photos/3879495/pexels-photo-3879495.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Smooth espresso with steamed milk",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 102,
+                        title: "Irish Coffee",
+                        price: 300,
+                        image: "https://images.pexels.com/photos/4915835/pexels-photo-4915835.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Classic coffee with a whiskey twist",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 103,
+                        title: "Caffè Macchiato",
+                        price: 280,
+                        image: "https://images.pexels.com/photos/28721317/pexels-photo-28721317.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Espresso 'stained' with milk",
+                        timestamp: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem(STORAGE_KEYS.STORE, JSON.stringify(defaultStore));
+            }
+            
+            if (!localStorage.getItem(STORAGE_KEYS.COLLABORATIONS)) {
+                // Default collaborations
+                const defaultCollaborations = [
+                    {
+                        id: 201,
+                        title: "Youth Tech Training",
+                        image: "https://images.pexels.com/photos/5499122/pexels-photo-5499122.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Digital skills workshops and mentorship programs for local youth.",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 202,
+                        title: "Artisan Markets",
+                        image: "https://images.pexels.com/photos/4439444/pexels-photo-4439444.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Supporting local artisans through pop-up markets and online sales.",
+                        timestamp: new Date().toISOString()
+                    },
+                    {
+                        id: 203,
+                        title: "Community Events",
+                        image: "https://images.pexels.com/photos/3843284/pexels-photo-3843284.jpeg?auto=compress&cs=tinysrgb&w=600",
+                        description: "Monthly gatherings focused on skills sharing and networking.",
+                        timestamp: new Date().toISOString()
+                    }
+                ];
+                localStorage.setItem(STORAGE_KEYS.COLLABORATIONS, JSON.stringify(defaultCollaborations));
+            }
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const messageEl = toast.querySelector('#toast-message');
+            
+            messageEl.textContent = message;
+            
+            // Remove all type classes
+            toast.className = 'toast';
+            
+            // Add appropriate class
+            if (type !== 'success') {
+                toast.classList.add(type);
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Clear form errors
+        function clearError(input) {
+            input.classList.remove('error');
+        }
+
+        // Navigation
+        function showSection(sectionId) {
+            // Update active menu item
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // Show corresponding section
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(`${sectionId}-section`).classList.add('active');
+
+            // Load data for section
+            loadSectionData(sectionId);
+        }
+
+        // Load data for specific section
+        function loadSectionData(sectionId) {
+            switch(sectionId) {
+                case 'dashboard':
+                    updateDashboardStats();
+                    break;
+                case 'projects':
+                    loadProjects();
+                    break;
+                case 'store':
+                    loadStoreItems();
+                    break;
+                case 'collaborations':
+                    loadCollaborations();
+                    break;
+            }
+        }
+
+        // Update dashboard statistics
+        function updateDashboardStats() {
+            const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+            const store = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE) || '[]');
+            const collaborations = JSON.parse(localStorage.getItem(STORAGE_KEYS.COLLABORATIONS) || '[]');
+            
+            document.getElementById('projects-count').textContent = `${projects.length} Items`;
+            document.getElementById('store-count').textContent = `${store.length} Items`;
+            document.getElementById('collaborations-count').textContent = `${collaborations.length} Items`;
+        }
+
+        // PROJECTS MANAGEMENT
+        function loadProjects() {
+            const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+            const container = document.getElementById('projects-list');
+            
+            if (projects.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center; width: 100%; padding: 20px;">No projects added yet.</p>';
+                return;
+            }
+
+            container.innerHTML = projects.map(project => `
+                <div class="item-card" data-id="${project.id}">
+                    <img src="${project.image}" alt="${project.title}" 
+                         onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                    <h4>${project.title}</h4>
+                    <p>${project.description.substring(0, 100)}...</p>
+                    ${project.services ? `<p><strong>Services:</strong> ${project.services.split('\n').slice(0, 2).join(', ')}</p>` : ''}
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" onclick="editProject(${project.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteProject(${project.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveProject(e) {
+            e.preventDefault();
+            
+            // Clear errors
+            document.querySelectorAll('#projectForm input, #projectForm textarea').forEach(input => {
+                clearError(input);
+            });
+            
+            const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+            const projectId = document.getElementById('project-id').value;
+            const title = document.getElementById('project-title').value.trim();
+            const image = document.getElementById('project-image').value.trim();
+            const description = document.getElementById('project-description').value.trim();
+            const services = document.getElementById('project-services').value.trim();
+
+            // Validation
+            let isValid = true;
+            if (!title) {
+                document.getElementById('project-title').classList.add('error');
+                isValid = false;
+            }
+            if (!image) {
+                document.getElementById('project-image').classList.add('error');
+                isValid = false;
+            }
+            if (!description) {
+                document.getElementById('project-description').classList.add('error');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            const projectData = {
+                id: projectId ? parseInt(projectId) : Date.now(),
+                title,
+                image,
+                description,
+                services,
+                timestamp: new Date().toISOString()
+            };
+
+            if (projectId) {
+                // Update existing project
+                const index = projects.findIndex(p => p.id === parseInt(projectId));
+                if (index !== -1) {
+                    projects[index] = projectData;
+                    showToast('Project updated successfully');
+                } else {
+                    showToast('Project not found', 'error');
+                    return;
+                }
+            } else {
+                // Add new project
+                projects.push(projectData);
+                showToast('Project added successfully');
+            }
+
+            localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(projects));
+            resetProjectForm();
+            loadProjects();
+            updateDashboardStats();
+        }
+
+        function editProject(id) {
+            const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+            const project = projects.find(p => p.id === id);
+            
+            if (project) {
+                document.getElementById('project-id').value = project.id;
+                document.getElementById('project-title').value = project.title;
+                document.getElementById('project-image').value = project.image;
+                document.getElementById('project-description').value = project.description;
+                document.getElementById('project-services').value = project.services || '';
+                
+                showSection('projects');
+                
+                // Scroll to form
+                document.getElementById('projectForm').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+
+        function deleteProject(id) {
+            if (!confirm('Are you sure you want to delete this project?')) return;
+            
+            const projects = JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]');
+            const projectToDelete = projects.find(p => p.id === id);
+            
+            if (!projectToDelete) {
+                showToast('Project not found', 'error');
+                return;
+            }
+            
+            const newProjects = projects.filter(p => p.id !== id);
+            localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(newProjects));
+            
+            showToast(`${projectToDelete.title} deleted successfully`);
+            loadProjects();
+            updateDashboardStats();
+        }
+
+        function resetProjectForm() {
+            document.getElementById('projectForm').reset();
+            document.getElementById('project-id').value = '';
+            
+            // Clear errors
+            document.querySelectorAll('#projectForm input, #projectForm textarea').forEach(input => {
+                clearError(input);
+            });
+        }
+
+        // STORE MANAGEMENT - FIXED VERSION
+        function loadStoreItems() {
+            const storeItems = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE) || '[]');
+            const container = document.getElementById('store-items-list');
+            
+            if (storeItems.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center; width: 100%; padding: 20px;">No store items added yet.</p>';
+                return;
+            }
+
+            container.innerHTML = storeItems.map(item => `
+                <div class="item-card" data-id="${item.id}">
+                    <img src="${item.image}" alt="${item.title}" 
+                         onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                    <h4>${item.title}</h4>
+                    <p>${item.description}</p>
+                    <div class="price">KES ${item.price}</div>
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" onclick="editStoreItem(${item.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteStoreItem(${item.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveStoreItem(e) {
+            e.preventDefault();
+            
+            // Clear errors
+            document.querySelectorAll('#storeForm input').forEach(input => {
+                clearError(input);
+            });
+            
+            const storeItems = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE) || '[]');
+            const itemId = document.getElementById('store-item-id').value;
+            const title = document.getElementById('store-title').value.trim();
+            const price = parseInt(document.getElementById('store-price').value);
+            const image = document.getElementById('store-image').value.trim();
+            const description = document.getElementById('store-description').value.trim();
+
+            // Validation
+            let isValid = true;
+            if (!title) {
+                document.getElementById('store-title').classList.add('error');
+                isValid = false;
+            }
+            if (!price || price < 0) {
+                document.getElementById('store-price').classList.add('error');
+                isValid = false;
+            }
+            if (!image) {
+                document.getElementById('store-image').classList.add('error');
+                isValid = false;
+            }
+            if (!description) {
+                document.getElementById('store-description').classList.add('error');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                showToast('Please fill in all required fields correctly', 'error');
+                return;
+            }
+
+            const storeItem = {
+                id: itemId ? parseInt(itemId) : Date.now(),
+                title,
+                price,
+                image,
+                description,
+                timestamp: new Date().toISOString()
+            };
+
+            if (itemId) {
+                // Update existing item
+                const index = storeItems.findIndex(item => item.id === parseInt(itemId));
+                if (index !== -1) {
+                    storeItems[index] = storeItem;
+                    showToast(`${title} updated successfully`);
+                } else {
+                    showToast('Item not found for update', 'error');
+                    return;
+                }
+            } else {
+                // Add new item
+                storeItems.push(storeItem);
+                showToast(`${title} added successfully`);
+            }
+
+            localStorage.setItem(STORAGE_KEYS.STORE, JSON.stringify(storeItems));
+            resetStoreForm();
+            loadStoreItems();
+            updateDashboardStats();
+        }
+
+        function editStoreItem(id) {
+            const storeItems = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE) || '[]');
+            const item = storeItems.find(item => item.id === id);
+            
+            if (item) {
+                document.getElementById('store-item-id').value = item.id;
+                document.getElementById('store-title').value = item.title;
+                document.getElementById('store-price').value = item.price;
+                document.getElementById('store-image').value = item.image;
+                document.getElementById('store-description').value = item.description;
+                
+                showSection('store');
+                
+                // Scroll to form
+                document.getElementById('storeForm').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+                
+                showToast(`Editing: ${item.title}`, 'info');
+            } else {
+                showToast('Item not found', 'error');
+            }
+        }
+
+        function deleteStoreItem(id) {
+            if (!confirm('Are you sure you want to delete this store item?')) return;
+            
+            const storeItems = JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE) || '[]');
+            const itemToDelete = storeItems.find(item => item.id === id);
+            
+            if (!itemToDelete) {
+                showToast('Item not found', 'error');
+                return;
+            }
+            
+            const newStoreItems = storeItems.filter(item => item.id !== id);
+            localStorage.setItem(STORAGE_KEYS.STORE, JSON.stringify(newStoreItems));
+            
+            showToast(`${itemToDelete.title} deleted successfully`);
+            loadStoreItems();
+            updateDashboardStats();
+        }
+
+        function resetStoreForm() {
+            document.getElementById('storeForm').reset();
+            document.getElementById('store-item-id').value = '';
+            
+            // Clear errors
+            document.querySelectorAll('#storeForm input').forEach(input => {
+                clearError(input);
+            });
+        }
+
+        // COLLABORATIONS MANAGEMENT
+        function loadCollaborations() {
+            const collaborations = JSON.parse(localStorage.getItem(STORAGE_KEYS.COLLABORATIONS) || '[]');
+            const container = document.getElementById('collaborations-list');
+            
+            if (collaborations.length === 0) {
+                container.innerHTML = '<p style="color: #666; text-align: center; width: 100%; padding: 20px;">No collaborations added yet.</p>';
+                return;
+            }
+
+            container.innerHTML = collaborations.map(collab => `
+                <div class="item-card" data-id="${collab.id}">
+                    <img src="${collab.image}" alt="${collab.title}" 
+                         onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
+                    <h4>${collab.title}</h4>
+                    <p>${collab.description.substring(0, 100)}...</p>
+                    <div class="item-actions">
+                        <button class="action-btn edit-btn" onclick="editCollaboration(${collab.id})">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="action-btn delete-btn" onclick="deleteCollaboration(${collab.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function saveCollaboration(e) {
+            e.preventDefault();
+            
+            // Clear errors
+            document.querySelectorAll('#collaborationForm input, #collaborationForm textarea').forEach(input => {
+                clearError(input);
+            });
+            
+            const collaborations = JSON.parse(localStorage.getItem(STORAGE_KEYS.COLLABORATIONS) || '[]');
+            const collabId = document.getElementById('collaboration-id').value;
+            const title = document.getElementById('collaboration-title').value.trim();
+            const image = document.getElementById('collaboration-image').value.trim();
+            const description = document.getElementById('collaboration-description').value.trim();
+
+            // Validation
+            let isValid = true;
+            if (!title) {
+                document.getElementById('collaboration-title').classList.add('error');
+                isValid = false;
+            }
+            if (!image) {
+                document.getElementById('collaboration-image').classList.add('error');
+                isValid = false;
+            }
+            if (!description) {
+                document.getElementById('collaboration-description').classList.add('error');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                showToast('Please fill in all required fields', 'error');
+                return;
+            }
+
+            const collaboration = {
+                id: collabId ? parseInt(collabId) : Date.now(),
+                title,
+                image,
+                description,
+                timestamp: new Date().toISOString()
+            };
+
+            if (collabId) {
+                // Update existing collaboration
+                const index = collaborations.findIndex(c => c.id === parseInt(collabId));
+                if (index !== -1) {
+                    collaborations[index] = collaboration;
+                    showToast('Collaboration updated successfully');
+                } else {
+                    showToast('Collaboration not found', 'error');
+                    return;
+                }
+            } else {
+                // Add new collaboration
+                collaborations.push(collaboration);
+                showToast('Collaboration added successfully');
+            }
+
+            localStorage.setItem(STORAGE_KEYS.COLLABORATIONS, JSON.stringify(collaborations));
+            resetCollaborationForm();
+            loadCollaborations();
+            updateDashboardStats();
+        }
+
+        function editCollaboration(id) {
+            const collaborations = JSON.parse(localStorage.getItem(STORAGE_KEYS.COLLABORATIONS) || '[]');
+            const collab = collaborations.find(c => c.id === id);
+            
+            if (collab) {
+                document.getElementById('collaboration-id').value = collab.id;
+                document.getElementById('collaboration-title').value = collab.title;
+                document.getElementById('collaboration-image').value = collab.image;
+                document.getElementById('collaboration-description').value = collab.description;
+                
+                showSection('collaborations');
+                
+                // Scroll to form
+                document.getElementById('collaborationForm').scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }
+
+        function deleteCollaboration(id) {
+            if (!confirm('Are you sure you want to delete this collaboration?')) return;
+            
+            const collaborations = JSON.parse(localStorage.getItem(STORAGE_KEYS.COLLABORATIONS) || '[]');
+            const collabToDelete = collaborations.find(c => c.id === id);
+            
+            if (!collabToDelete) {
+                showToast('Collaboration not found', 'error');
+                return;
+            }
+            
+            const newCollaborations = collaborations.filter(c => c.id !== id);
+            localStorage.setItem(STORAGE_KEYS.COLLABORATIONS, JSON.stringify(newCollaborations));
+            
+            showToast(`${collabToDelete.title} deleted successfully`);
+            loadCollaborations();
+            updateDashboardStats();
+        }
+
+        function resetCollaborationForm() {
+            document.getElementById('collaborationForm').reset();
+            document.getElementById('collaboration-id').value = '';
+            
+            // Clear errors
+            document.querySelectorAll('#collaborationForm input, #collaborationForm textarea').forEach(input => {
+                clearError(input);
+            });
+        }
+
+        // BACKUP & RESTORE
+        function exportData(type) {
+            let data;
+            let filename;
+            
+            switch(type) {
+                case 'projects':
+                    data = localStorage.getItem(STORAGE_KEYS.PROJECTS);
+                    filename = 'nasila-projects-backup.json';
+                    break;
+                case 'store':
+                    data = localStorage.getItem(STORAGE_KEYS.STORE);
+                    filename = 'nasila-store-backup.json';
+                    break;
+                case 'collaborations':
+                    data = localStorage.getItem(STORAGE_KEYS.COLLABORATIONS);
+                    filename = 'nasila-collaborations-backup.json';
+                    break;
+            }
+
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast(`${type.charAt(0).toUpperCase() + type.slice(1)} exported successfully`);
+        }
+
+        function exportAllData() {
+            const allData = {
+                projects: JSON.parse(localStorage.getItem(STORAGE_KEYS.PROJECTS) || '[]'),
+                store: JSON.parse(localStorage.getItem(STORAGE_KEYS.STORE) || '[]'),
+                collaborations: JSON.parse(localStorage.getItem(STORAGE_KEYS.COLLABORATIONS) || '[]'),
+                exportDate: new Date().toISOString()
+            };
+
+            const blob = new Blob([JSON.stringify(allData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `nasila-full-backup-${new Date().toISOString().split('T')[0]}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast('All data exported successfully');
+        }
+
+        function importData() {
+            const fileInput = document.getElementById('import-file');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showToast('Please select a file to import', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    
+                    if (data.projects && data.store && data.collaborations) {
+                        // Full backup import
+                        localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(data.projects));
+                        localStorage.setItem(STORAGE_KEYS.STORE, JSON.stringify(data.store));
+                        localStorage.setItem(STORAGE_KEYS.COLLABORATIONS, JSON.stringify(data.collaborations));
+                        showToast('All data imported successfully');
+                    } else if (Array.isArray(data)) {
+                        // Single section import
+                        if (data.length > 0) {
+                            const firstItem = data[0];
+                            if (firstItem.price !== undefined) {
+                                localStorage.setItem(STORAGE_KEYS.STORE, JSON.stringify(data));
+                                showToast('Store data imported successfully');
+                            } else if (firstItem.services !== undefined) {
+                                localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(data));
+                                showToast('Projects data imported successfully');
+                            } else {
+                                localStorage.setItem(STORAGE_KEYS.COLLABORATIONS, JSON.stringify(data));
+                                showToast('Collaborations data imported successfully');
+                            }
+                        }
+                    }
+                    
+                    // Reload all sections
+                    updateDashboardStats();
+                    loadProjects();
+                    loadStoreItems();
+                    loadCollaborations();
+                    
+                    // Clear file input
+                    fileInput.value = '';
+                    
+                } catch (error) {
+                    showToast('Error reading file. Please check the format.', 'error');
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeStorage();
+            updateDashboardStats();
+            loadProjects();
+            loadStoreItems();
+            loadCollaborations();
+
+            // Sidebar navigation
+            document.querySelectorAll('.sidebar-menu a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const section = this.getAttribute('data-section');
+                    showSection(section);
+                });
+            });
+
+            // Form submissions
+            document.getElementById('projectForm').addEventListener('submit', saveProject);
+            document.getElementById('storeForm').addEventListener('submit', saveStoreItem);
+            document.getElementById('collaborationForm').addEventListener('submit', saveCollaboration);
+
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('loginTime');
+                window.location.href = 'admin-login.html';
+            });
+        });
+
+        // Auto logout after 8 hours
+        setInterval(() => {
+            const loginTime = localStorage.getItem('loginTime');
+            if (loginTime && (Date.now() - parseInt(loginTime)) > 8 * 60 * 60 * 1000) {
+                localStorage.removeItem('adminLoggedIn');
+                localStorage.removeItem('loginTime');
+                window.location.href = 'admin-login.html';
+            }
+        }, 60000); // Check every minute
+    </script>
+</body>
+</html>

@@ -463,15 +463,13 @@ ${message}`)}`;
       // Update cart counts on page load
       updateCartCounts();
       
-      // Add event listeners to all buy buttons
-      const buyButtons = document.querySelectorAll('.buy-btn');
-      buyButtons.forEach(button => {
+      // Add event listeners to all buy buttons - redirect to WIP page
+        const buyButtons = document.querySelectorAll('.buy-btn');
+        buyButtons.forEach(button => {
         button.addEventListener('click', function() {
-          const card = this.closest('.card');
-          const name = card.querySelector('h3').textContent;
-          const price = parseInt(this.getAttribute('data-price'));
-          addToCart(name, price);
-        });
+    // Redirect to WIP page
+         window.location.href = 'wip.html';
+         });
       });
       
       // Smooth scrolling for anchor links

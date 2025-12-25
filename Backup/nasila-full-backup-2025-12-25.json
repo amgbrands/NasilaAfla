@@ -1,0 +1,78 @@
+{
+  "projects": [
+    {
+      "id": 1,
+      "title": "Digital Hub",
+      "image": "https://images.pexels.com/photos/5361244/pexels-photo-5361244.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Comprehensive digital solutions for businesses",
+      "services": "Website design & development\nDigital marketing\nSocial media management\nIT consulting",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    },
+    {
+      "id": 2,
+      "title": "Women Empowerment",
+      "image": "https://images.pexels.com/photos/13033134/pexels-photo-13033134.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Supporting Maasai beadwork through fair-market access and skill development",
+      "services": "Beadwork training\nMarket access\nEntrepreneurship training",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    },
+    {
+      "id": 3,
+      "title": "Creative Arts",
+      "image": "https://images.pexels.com/photos/12632479/pexels-photo-12632479.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Music, design & storytelling platforms for youth",
+      "services": "Music production\nGraphic design\nStorytelling workshops",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    }
+  ],
+  "store": [
+    {
+      "id": 101,
+      "title": "Lattè Coffee",
+      "price": 250,
+      "image": "https://images.pexels.com/photos/3879495/pexels-photo-3879495.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Smooth espresso with steamed milk",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    },
+    {
+      "id": 102,
+      "title": "Irish Coffee",
+      "price": 300,
+      "image": "https://images.pexels.com/photos/4915835/pexels-photo-4915835.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Classic coffee with a whiskey twist",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    },
+    {
+      "id": 103,
+      "title": "Caffè Macchiato",
+      "price": 280,
+      "image": "https://images.pexels.com/photos/28721317/pexels-photo-28721317.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Espresso 'stained' with milk",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    }
+  ],
+  "collaborations": [
+    {
+      "id": 201,
+      "title": "Youth Tech Training",
+      "image": "https://images.pexels.com/photos/5499122/pexels-photo-5499122.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Digital skills workshops and mentorship programs for local youth.",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    },
+    {
+      "id": 202,
+      "title": "Artisan Markets",
+      "image": "https://images.pexels.com/photos/4439444/pexels-photo-4439444.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Supporting local artisans through pop-up markets and online sales.",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    },
+    {
+      "id": 203,
+      "title": "Community Events",
+      "image": "https://images.pexels.com/photos/3843284/pexels-photo-3843284.jpeg?auto=compress&cs=tinysrgb&w=600",
+      "description": "Monthly gatherings focused on skills sharing and networking.",
+      "timestamp": "2025-12-25T18:55:32.909Z"
+    }
+  ],
+  "exportDate": "2025-12-25T18:55:44.961Z"
+}

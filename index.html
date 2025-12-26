@@ -932,6 +932,448 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// ==================== CHRISTMAS EFFECTS ====================
+class ChristmasEffects {
+    constructor() {
+        this.isChristmasPeriod = this.checkChristmasPeriod();
+        this.isEnabled = localStorage.getItem('christmasEnabled') === 'true' && this.isChristmasPeriod;
+        this.settings = {
+            snowflakeCount: localStorage.getItem('snowflakeCount') || 100,
+            snowflakeSpeed: localStorage.getItem('snowflakeSpeed') || 'medium',
+            showDecorations: localStorage.getItem('showDecorations') !== 'false',
+            enableMusic: localStorage.getItem('enableMusic') === 'true',
+            intensity: localStorage.getItem('snowIntensity') || 'medium'
+        };
+        
+        this.audio = null;
+        this.snowflakes = [];
+        this.animationId = null;
+        this.init();
+    }
+
+    checkChristmasPeriod() {
+        const now = new Date();
+        const currentMonth = now.getMonth() + 1;
+        const currentDate = now.getDate();
+        
+        // Check if between Dec 24-28
+        if (currentMonth === 12 && currentDate >= 24 && currentDate <= 28) {
+            return true;
+        }
+        
+        // Also check from admin override
+        const adminOverride = localStorage.getItem('forceChristmas');
+        return adminOverride === 'true';
+    }
+
+    init() {
+        if (this.isChristmasPeriod) {
+            this.createToggleButton();
+            if (this.isEnabled) {
+                this.enableEffects();
+            }
+            this.checkAdminSettings();
+        }
+    }
+
+    createToggleButton() {
+        // Only create if not already exists
+        if (document.getElementById('christmasToggle')) return;
+        
+        const toggleHTML = `
+            <div class="christmas-toggle">
+                <button class="christmas-toggle-btn ${this.isEnabled ? 'active' : ''}" id="christmasToggle">
+                    <i class="fas ${this.isEnabled ? 'fa-snowflake' : 'fa-gift'}"></i>
+                    ${this.isEnabled ? 'Christmas Mode ON' : 'Activate Christmas'}
+                    <span class="christmas-badge" style="display: ${this.isEnabled ? 'flex' : 'none'}">!</span>
+                </button>
+                <div class="christmas-settings" id="christmasSettings">
+                    <h3><i class="fas fa-cog"></i> Christmas Settings</h3>
+                    <div class="settings-group">
+                        <label>
+                            <input type="checkbox" id="enableSnow" ${this.isEnabled ? 'checked' : ''}>
+                            Enable Snowfall
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label>Snowflake Count: <span id="countValue">${this.settings.snowflakeCount}</span></label>
+                        <input type="range" id="snowflakeCount" min="20" max="300" value="${this.settings.snowflakeCount}">
+                    </div>
+                    <div class="settings-group">
+                        <label>Snowflake Speed:</label>
+                        <select id="snowflakeSpeed">
+                            <option value="slow" ${this.settings.snowflakeSpeed === 'slow' ? 'selected' : ''}>Slow</option>
+                            <option value="medium" ${this.settings.snowflakeSpeed === 'medium' ? 'selected' : ''}>Medium</option>
+                            <option value="fast" ${this.settings.snowflakeSpeed === 'fast' ? 'selected' : ''}>Fast</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label>Snow Intensity:</label>
+                        <select id="snowIntensity">
+                            <option value="light" ${this.settings.intensity === 'light' ? 'selected' : ''}>Light</option>
+                            <option value="medium" ${this.settings.intensity === 'medium' ? 'selected' : ''}>Medium</option>
+                            <option value="heavy" ${this.settings.intensity === 'heavy' ? 'selected' : ''}>Heavy</option>
+                        </select>
+                    </div>
+                    <div class="settings-group">
+                        <label>
+                            <input type="checkbox" id="showDecorations" ${this.settings.showDecorations ? 'checked' : ''}>
+                            Show Decorations
+                        </label>
+                    </div>
+                    <div class="settings-group">
+                        <label>
+                            <input type="checkbox" id="enableMusic" ${this.settings.enableMusic ? 'checked' : ''}>
+                            Enable Christmas Music
+                        </label>
+                    </div>
+                    <button class="btn" style="width: 100%; margin-top: 10px; background: var(--christmas-green)" onclick="christmasEffects.saveSettings()">
+                        <i class="fas fa-save"></i> Save Settings
+                    </button>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', toggleHTML);
+        this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+        const toggleBtn = document.getElementById('christmasToggle');
+        const settingsBtn = document.getElementById('christmasSettings');
+        
+        toggleBtn?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.toggleEffects();
+        });
+        
+        // Toggle settings panel
+        toggleBtn?.addEventListener('dblclick', (e) => {
+            e.stopPropagation();
+            settingsBtn?.classList.toggle('active');
+        });
+        
+        // Close settings when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.christmas-toggle')) {
+                settingsBtn?.classList.remove('active');
+            }
+        });
+        
+        // Update snowflake count value
+        const countSlider = document.getElementById('snowflakeCount');
+        const countValue = document.getElementById('countValue');
+        
+        countSlider?.addEventListener('input', (e) => {
+            countValue.textContent = e.target.value;
+        });
+    }
+
+    toggleEffects() {
+        this.isEnabled = !this.isEnabled;
+        localStorage.setItem('christmasEnabled', this.isEnabled);
+        
+        const toggleBtn = document.getElementById('christmasToggle');
+        const badge = toggleBtn?.querySelector('.christmas-badge');
+        
+        if (this.isEnabled) {
+            this.enableEffects();
+            toggleBtn?.classList.add('active');
+            toggleBtn.innerHTML = `<i class="fas fa-snowflake"></i> Christmas Mode ON <span class="christmas-badge">!</span>`;
+            if (badge) badge.style.display = 'flex';
+        } else {
+            this.disableEffects();
+            toggleBtn?.classList.remove('active');
+            toggleBtn.innerHTML = `<i class="fas fa-gift"></i> Activate Christmas <span class="christmas-badge" style="display: none">!</span>`;
+            if (badge) badge.style.display = 'none';
+        }
+        
+        this.showToast(this.isEnabled ? '🎄 Christmas mode activated!' : 'Christmas mode disabled');
+    }
+
+    enableEffects() {
+        document.body.classList.add('christmas-active');
+        this.createSnowfall();
+        if (this.settings.showDecorations) {
+            this.addDecorations();
+        }
+        if (this.settings.enableMusic) {
+            this.playChristmasMusic();
+        }
+        this.updateAdminStatus(true);
+    }
+
+    disableEffects() {
+        document.body.classList.remove('christmas-active');
+        this.removeSnowfall();
+        this.removeDecorations();
+        this.stopChristmasMusic();
+        this.updateAdminStatus(false);
+    }
+
+    createSnowfall() {
+        // Remove existing snowfall if any
+        this.removeSnowfall();
+        
+        const container = document.createElement('div');
+        container.id = 'snowfall-container';
+        document.body.appendChild(container);
+        
+        const count = parseInt(this.settings.snowflakeCount);
+        const speed = this.getSnowflakeSpeed();
+        const intensity = this.settings.intensity;
+        
+        // Create snowflakes
+        for (let i = 0; i < count; i++) {
+            this.createSnowflake(container, speed, intensity);
+        }
+        
+        // Start animation
+        this.animateSnowflakes();
+    }
+
+    createSnowflake(container, speed, intensity) {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        
+        // Random size based on intensity
+        const sizes = this.getSnowflakeSizes(intensity);
+        const sizeClass = sizes[Math.floor(Math.random() * sizes.length)];
+        snowflake.classList.add(sizeClass);
+        
+        // Random position
+        const left = Math.random() * 100;
+        snowflake.style.left = left + 'vw';
+        snowflake.style.top = (-20 - Math.random() * 20) + 'px';
+        
+        // Random animation properties
+        const duration = speed * (0.8 + Math.random() * 0.4);
+        const delay = Math.random() * 5;
+        const sway = (Math.random() - 0.5) * 100;
+        
+        snowflake.style.setProperty('--sway', sway + 'px');
+        snowflake.style.animationDuration = duration + 's';
+        snowflake.style.animationDelay = delay + 's';
+        
+        // Store reference
+        snowflake.dataset.speed = duration;
+        snowflake.dataset.sway = sway;
+        snowflake.dataset.left = left;
+        
+        // Add sparkle effect randomly
+        if (Math.random() > 0.7) {
+            snowflake.classList.add('snowflake-sparkle');
+        }
+        
+        container.appendChild(snowflake);
+        this.snowflakes.push(snowflake);
+    }
+
+    getSnowflakeSizes(intensity) {
+        switch(intensity) {
+            case 'light':
+                return ['snowflake-small', 'snowflake-medium'];
+            case 'heavy':
+                return ['snowflake-medium', 'snowflake-large', 'snowflake-extra-large'];
+            default:
+                return ['snowflake-small', 'snowflake-medium', 'snowflake-large'];
+        }
+    }
+
+    getSnowflakeSpeed() {
+        switch(this.settings.snowflakeSpeed) {
+            case 'slow': return 15;
+            case 'fast': return 5;
+            default: return 10;
+        }
+    }
+
+    animateSnowflakes() {
+        const container = document.getElementById('snowfall-container');
+        if (!container || !this.isEnabled) {
+            if (this.animationId) {
+                cancelAnimationFrame(this.animationId);
+                this.animationId = null;
+            }
+            return;
+        }
+        
+        const now = Date.now();
+        
+        this.snowflakes.forEach((snowflake, index) => {
+            if (!snowflake.parentNode) {
+                this.snowflakes.splice(index, 1);
+                return;
+            }
+            
+            // Get current position
+            let top = parseFloat(snowflake.style.top) || -20;
+            
+            // Calculate new position based on animation progress
+            const speed = parseFloat(snowflake.dataset.speed) || 10;
+            const progress = ((now / 1000) % speed) / speed;
+            
+            // Update position
+            top = progress * (window.innerHeight + 40) - 20;
+            snowflake.style.top = top + 'px';
+            
+            // Add horizontal sway
+            const sway = parseFloat(snowflake.dataset.sway) || 0;
+            const left = parseFloat(snowflake.dataset.left) || 50;
+            const swayOffset = Math.sin(progress * Math.PI * 2) * sway;
+            snowflake.style.left = (left + swayOffset / window.innerWidth * 100) + 'vw';
+            
+            // Update opacity for fade in/out effect
+            const opacity = top < 50 || top > window.innerHeight - 100 ? 0.3 : 0.8;
+            snowflake.style.opacity = opacity;
+            
+            // Reset if snowflake is below screen
+            if (top > window.innerHeight) {
+                snowflake.style.top = '-20px';
+                snowflake.dataset.left = Math.random() * 100;
+            }
+        });
+        
+        // Continue animation
+        this.animationId = requestAnimationFrame(() => this.animateSnowflakes());
+    }
+
+    removeSnowfall() {
+        const container = document.getElementById('snowfall-container');
+        if (container) {
+            container.remove();
+        }
+        this.snowflakes = [];
+        if (this.animationId) {
+            cancelAnimationFrame(this.animationId);
+            this.animationId = null;
+        }
+    }
+
+    addDecorations() {
+        const decorations = ['🎄', '🎁', '🎅', '🌟', '🔔', '⭐'];
+        
+        // Add decorations to corners
+        decorations.forEach((deco, index) => {
+            const decoration = document.createElement('div');
+            decoration.className = 'christmas-decoration';
+            decoration.textContent = deco;
+            decoration.style.cssText = `
+                position: fixed;
+                top: ${20 + index * 15}px;
+                left: ${10 + index * 10}px;
+                font-size: ${24 + index * 2}px;
+                z-index: 9997;
+                pointer-events: none;
+                animation: float 3s ease-in-out infinite;
+                animation-delay: ${index * 0.5}s;
+            `;
+            document.body.appendChild(decoration);
+        });
+    }
+
+    removeDecorations() {
+        const decorations = document.querySelectorAll('.christmas-decoration');
+        decorations.forEach(deco => deco.remove());
+    }
+
+    playChristmasMusic() {
+        try {
+            if (!this.audio) {
+                this.audio = new Audio();
+                this.audio.src = 'https://assets.mixkit.co/music/preview/mixkit-christmas-is-coming-793.mp3';
+                this.audio.loop = true;
+                this.audio.volume = 0.3;
+            }
+            this.audio.play().catch(e => {
+                console.log('Music autoplay prevented, user interaction required');
+                // Set up a play button if needed
+            });
+        } catch (error) {
+            console.log('Music playback error:', error);
+        }
+    }
+
+    stopChristmasMusic() {
+        if (this.audio) {
+            this.audio.pause();
+            this.audio.currentTime = 0;
+        }
+    }
+
+    saveSettings() {
+        this.settings = {
+            snowflakeCount: document.getElementById('snowflakeCount').value,
+            snowflakeSpeed: document.getElementById('snowflakeSpeed').value,
+            showDecorations: document.getElementById('showDecorations').checked,
+            enableMusic: document.getElementById('enableMusic').checked,
+            intensity: document.getElementById('snowIntensity').value
+        };
+        
+        // Save to localStorage
+        Object.entries(this.settings).forEach(([key, value]) => {
+            localStorage.setItem(key, value);
+        });
+        
+        // Reapply effects if enabled
+        if (this.isEnabled) {
+            this.disableEffects();
+            setTimeout(() => this.enableEffects(), 100);
+        }
+        
+        this.showToast('Settings saved!');
+        document.getElementById('christmasSettings')?.classList.remove('active');
+    }
+
+    updateAdminStatus(enabled) {
+        localStorage.setItem('christmasEffectsEnabled', enabled.toString());
+    }
+
+    checkAdminSettings() {
+        const adminSettings = localStorage.getItem('christmasAdminSettings');
+        if (adminSettings) {
+            try {
+                const settings = JSON.parse(adminSettings);
+                if (settings.forceEnable) {
+                    this.isEnabled = true;
+                    this.enableEffects();
+                }
+            } catch (e) {
+                console.error('Error parsing admin settings:', e);
+            }
+        }
+    }
+
+    showToast(message) {
+        const toast = document.getElementById('toast') || (() => {
+            const toastEl = document.createElement('div');
+            toastEl.id = 'toast';
+            toastEl.className = 'toast';
+            document.body.appendChild(toastEl);
+            return toastEl;
+        })();
+        
+        toast.innerHTML = `<i class="fas fa-snowflake"></i> ${message}`;
+        toast.classList.add('show');
+        
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+}
+
+// Initialize Christmas Effects
+let christmasEffects;
+
+document.addEventListener('DOMContentLoaded', function() {
+    // ... existing initialization code ...
+    
+    // Initialize Christmas Effects (after other initializations)
+    setTimeout(() => {
+        christmasEffects = new ChristmasEffects();
+    }, 100);
+});
   </script>
 </body>
 </html>

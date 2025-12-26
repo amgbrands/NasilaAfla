@@ -456,6 +456,7 @@
             <i class="fas fa-sign-out-alt"></i>
             Logout
         </button>
+        </div>
     </header>
 
     <!-- Main Container -->
@@ -491,6 +492,12 @@
                     <a href="#backup" data-section="backup">
                         <i class="fas fa-database"></i>
                         Backup & Restore
+                    </a>
+                </li>
+                <li>
+                    <a href="#christmas" data-section="christmas">
+                        <i class="fas fa-snowflake"></i>
+                        Christmas Settings
                     </a>
                 </li>
             </ul>
@@ -537,7 +544,7 @@
                     </div>
                 </div>
             </section>
-
+                
             <!-- Projects Section -->
             <section id="projects-section" class="content-section">
                 <div class="section-header">
@@ -762,6 +769,117 @@
                     </p>
                 </div>
             </section>
+
+            <!-- Christmas Settings Section -->
+            <section id="christmas-section" class="content-section">
+                <div class="section-header">
+                    <h2><i class="fas fa-snowflake"></i> Christmas Effects Settings</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-success" onclick="exportChristmasSettings()">
+                            <i class="fas fa-download"></i> Export Settings
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Christmas Period Control</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="christmas-date-start">Start Date</label>
+                            <input type="date" id="christmas-date-start" value="2024-12-24">
+                        </div>
+                        <div class="form-group">
+                            <label for="christmas-date-end">End Date</label>
+                            <input type="date" id="christmas-date-end" value="2024-12-28">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="force-christmas" onchange="toggleForceChristmas()">
+                            Force Enable Christmas Effects (Override Dates)
+                        </label>
+                        <span class="form-help">When checked, Christmas effects will be enabled regardless of date</span>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="saveChristmasDates()">
+                            <i class="fas fa-calendar-alt"></i> Save Dates
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Effect Customization</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="default-snow-count">Default Snowflake Count</label>
+                            <input type="range" id="default-snow-count" min="20" max="500" value="150">
+                            <span id="snow-count-value">150</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="default-snow-speed">Default Snowflake Speed</label>
+                            <select id="default-snow-speed">
+                                <option value="slow">Slow</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="fast">Fast</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="default-intensity">Default Snow Intensity</label>
+                            <select id="default-intensity">
+                                <option value="light">Light</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="heavy">Heavy</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="music-volume">Music Volume (0-100)</label>
+                            <input type="range" id="music-volume" min="0" max="100" value="30">
+                            <span id="volume-value">30%</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="auto-enable" checked>
+                            Auto-enable on Christmas period
+                        </label>
+                        <span class="form-help">Automatically enable Christmas effects during the specified period</span>
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="saveChristmasSettings()">
+                            <i class="fas fa-save"></i> Save Settings
+                        </button>
+                        <button class="btn btn-info" onclick="testChristmasEffects()">
+                            <i class="fas fa-play"></i> Test Effects
+                        </button>
+                        <button class="btn btn-danger" onclick="disableAllChristmas()">
+                            <i class="fas fa-ban"></i> Disable All
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h3>Preview & Statistics</h3>
+                    <div class="items-grid">
+                        <div class="item-card">
+                            <h4><i class="fas fa-calendar-check"></i> Status</h4>
+                            <p id="christmas-status">Checking...</p>
+                            <p id="days-remaining">Calculating...</p>
+                        </div>
+                        <div class="item-card">
+                            <h4><i class="fas fa-users"></i> User Statistics</h4>
+                            <p>Enabled by: <span id="users-enabled">0</span> users</p>
+                            <p>Average snowflakes: <span id="avg-snowflakes">150</span></p>
+                        </div>
+                        <div class="item-card">
+                            <h4><i class="fas fa-chart-line"></i> Performance</h4>
+                            <p>Memory usage: <span id="memory-usage">Low</span></p>
+                            <p>FPS impact: <span id="fps-impact">Minimal</span></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
@@ -770,6 +888,200 @@
         <i class="fas fa-check"></i>
         <span id="toast-message">Operation successful</span>
     </div>
+
+    <!-- CHRISTMAS FUNCTIONS MUST BE DEFINED BEFORE MAIN SCRIPT -->
+    <script>
+    // ==================== CHRISTMAS ADMIN FUNCTIONS ====================
+    function loadChristmasSettings() {
+        // Load saved settings
+        const savedSettings = JSON.parse(localStorage.getItem('christmasAdminSettings') || '{}');
+        
+        // Set form values
+        document.getElementById('christmas-date-start').value = savedSettings.startDate || '2024-12-24';
+        document.getElementById('christmas-date-end').value = savedSettings.endDate || '2024-12-28';
+        document.getElementById('force-christmas').checked = savedSettings.forceEnable || false;
+        document.getElementById('default-snow-count').value = savedSettings.defaultSnowCount || 150;
+        document.getElementById('snow-count-value').textContent = savedSettings.defaultSnowCount || 150;
+        document.getElementById('default-snow-speed').value = savedSettings.defaultSnowSpeed || 'medium';
+        document.getElementById('default-intensity').value = savedSettings.defaultIntensity || 'medium';
+        document.getElementById('music-volume').value = savedSettings.musicVolume || 30;
+        document.getElementById('volume-value').textContent = (savedSettings.musicVolume || 30) + '%';
+        document.getElementById('auto-enable').checked = savedSettings.autoEnable !== false;
+        
+        // Update slider values
+        document.getElementById('default-snow-count').addEventListener('input', function() {
+            document.getElementById('snow-count-value').textContent = this.value;
+        });
+        
+        document.getElementById('music-volume').addEventListener('input', function() {
+            document.getElementById('volume-value').textContent = this.value + '%';
+        });
+    }
+
+    function saveChristmasDates() {
+        const settings = JSON.parse(localStorage.getItem('christmasAdminSettings') || '{}');
+        
+        settings.startDate = document.getElementById('christmas-date-start').value;
+        settings.endDate = document.getElementById('christmas-date-end').value;
+        settings.forceEnable = document.getElementById('force-christmas').checked;
+        
+        // Save to localStorage
+        localStorage.setItem('christmasAdminSettings', JSON.stringify(settings));
+        
+        // Also save individual settings for main site
+        localStorage.setItem('forceChristmas', settings.forceEnable.toString());
+        
+        showToast('Christmas dates saved successfully');
+        updateChristmasStats();
+    }
+
+    function saveChristmasSettings() {
+        const settings = JSON.parse(localStorage.getItem('christmasAdminSettings') || '{}');
+        
+        settings.defaultSnowCount = parseInt(document.getElementById('default-snow-count').value);
+        settings.defaultSnowSpeed = document.getElementById('default-snow-speed').value;
+        settings.defaultIntensity = document.getElementById('default-intensity').value;
+        settings.musicVolume = parseInt(document.getElementById('music-volume').value);
+        settings.autoEnable = document.getElementById('auto-enable').checked;
+        
+        // Save to localStorage
+        localStorage.setItem('christmasAdminSettings', JSON.stringify(settings));
+        
+        // Save individual settings for main site
+        localStorage.setItem('snowflakeCount', settings.defaultSnowCount);
+        localStorage.setItem('snowflakeSpeed', settings.defaultSnowSpeed);
+        localStorage.setItem('snowIntensity', settings.defaultIntensity);
+        localStorage.setItem('musicVolume', settings.musicVolume);
+        
+        showToast('Christmas settings saved successfully');
+        updateChristmasStats();
+    }
+
+    function toggleForceChristmas() {
+        const isForced = document.getElementById('force-christmas').checked;
+        localStorage.setItem('forceChristmas', isForced.toString());
+        
+        // Notify all open tabs
+        localStorage.setItem('christmasUpdate', Date.now().toString());
+        
+        showToast(isForced ? 'Christmas effects forced ON' : 'Christmas effects following dates');
+    }
+
+    function testChristmasEffects() {
+        // Create a test notification
+        showToast('Testing Christmas effects...', 'info');
+        
+        // Simulate enabling effects
+        const testSettings = {
+            snowflakeCount: document.getElementById('default-snow-count').value,
+            snowflakeSpeed: document.getElementById('default-snow-speed').value,
+            intensity: document.getElementById('default-intensity').value
+        };
+        
+        // Store test settings temporarily
+        localStorage.setItem('testChristmas', 'true');
+        localStorage.setItem('testSettings', JSON.stringify(testSettings));
+        
+        // Open test page in new tab
+        window.open('index.html?testChristmas=true', '_blank');
+    }
+
+    function disableAllChristmas() {
+        if (confirm('Are you sure you want to disable all Christmas effects for all users?')) {
+            localStorage.removeItem('christmasAdminSettings');
+            localStorage.removeItem('forceChristmas');
+            localStorage.removeItem('christmasEnabled');
+            localStorage.removeItem('testChristmas');
+            
+            // Clear all Christmas settings
+            ['snowflakeCount', 'snowflakeSpeed', 'snowIntensity', 'musicVolume', 'showDecorations', 'enableMusic'].forEach(key => {
+                localStorage.removeItem(key);
+            });
+            
+            showToast('All Christmas effects disabled', 'warning');
+            updateChristmasStats();
+        }
+    }
+
+    function exportChristmasSettings() {
+        const settings = JSON.parse(localStorage.getItem('christmasAdminSettings') || '{}');
+        const dataStr = JSON.stringify(settings, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `christmas-settings-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        showToast('Christmas settings exported');
+    }
+
+    function updateChristmasStats() {
+        const now = new Date();
+        const startDate = new Date(document.getElementById('christmas-date-start').value);
+        const endDate = new Date(document.getElementById('christmas-date-end').value);
+        
+        // Update status
+        const isActive = now >= startDate && now <= endDate;
+        const statusEl = document.getElementById('christmas-status');
+        if (statusEl) {
+            statusEl.textContent = isActive ? 'Active 🎄' : 'Inactive';
+            statusEl.style.color = isActive ? 'var(--success)' : 'var(--danger)';
+        }
+        
+        // Calculate days remaining
+        const daysRemainingEl = document.getElementById('days-remaining');
+        if (daysRemainingEl) {
+            if (isActive) {
+                const daysLeft = Math.ceil((endDate - now) / (1000 * 60 * 60 * 24));
+                daysRemainingEl.textContent = `${daysLeft} days remaining`;
+            } else if (now < startDate) {
+                const daysUntil = Math.ceil((startDate - now) / (1000 * 60 * 60 * 24));
+                daysRemainingEl.textContent = `${daysUntil} days until Christmas`;
+            } else {
+                daysRemainingEl.textContent = 'Christmas period passed';
+            }
+        }
+        
+        // Update user statistics (simulated)
+        const enabledCount = Math.floor(Math.random() * 100); // In real app, track this
+        const usersEnabledEl = document.getElementById('users-enabled');
+        if (usersEnabledEl) {
+            usersEnabledEl.textContent = enabledCount;
+        }
+        
+        const avgSnowflakes = localStorage.getItem('snowflakeCount') || 150;
+        const avgSnowflakesEl = document.getElementById('avg-snowflakes');
+        if (avgSnowflakesEl) {
+            avgSnowflakesEl.textContent = avgSnowflakes;
+        }
+        
+        // Performance indicators
+        const memoryUsageEl = document.getElementById('memory-usage');
+        if (memoryUsageEl) {
+            memoryUsageEl.textContent = 'Low';
+        }
+        
+        const fpsImpactEl = document.getElementById('fps-impact');
+        if (fpsImpactEl) {
+            fpsImpactEl.textContent = 'Minimal';
+        }
+    }
+
+    // Listen for storage changes (when Christmas settings are updated elsewhere)
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'christmasUpdate') {
+            loadChristmasSettings();
+            updateChristmasStats();
+        }
+    });
+
+    // Update stats periodically
+    setInterval(updateChristmasStats, 60000); // Every minute
+    </script>
 
     <script>
         // Check authentication
@@ -944,6 +1256,14 @@
                     break;
                 case 'collaborations':
                     loadCollaborations();
+                    break;
+                case 'backup':
+                    // Already handled by showing the section
+                    break;
+                case 'christmas':
+                    // Now these functions exist because they're defined above
+                    loadChristmasSettings();
+                    updateChristmasStats();
                     break;
             }
         }

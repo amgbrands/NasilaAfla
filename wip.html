@@ -190,6 +190,91 @@
     document.addEventListener('DOMContentLoaded', function() {
       updateCartCounts();
     });
+
+    // Christmas effects for all pages
+document.addEventListener('DOMContentLoaded', function() {
+  // Check if Christmas effects should be enabled
+  const isChristmasPeriod = () => {
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const day = now.getDate();
+    
+    if (month === 12 && day >= 24 && day <= 28) {
+      return true;
+    }
+    
+    return localStorage.getItem('forceChristmas') === 'true';
+  };
+  
+  const isEnabled = localStorage.getItem('christmasEnabled') === 'true' && isChristmasPeriod();
+  
+  if (isEnabled) {
+    // Add Christmas class to body
+    document.body.classList.add('christmas-active');
+    
+    // Simple snowflake effect for other pages
+    const snowflakeCount = localStorage.getItem('snowflakeCount') || 50;
+    createSimpleSnowflakes(parseInt(snowflakeCount));
+  }
+  
+  function createSimpleSnowflakes(count) {
+    const container = document.createElement('div');
+    container.id = 'snowfall-container';
+    container.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 9998;
+    `;
+    document.body.appendChild(container);
+    
+    for (let i = 0; i < count; i++) {
+      const snowflake = document.createElement('div');
+      snowflake.style.cssText = `
+        position: absolute;
+        top: -20px;
+        left: ${Math.random() * 100}vw;
+        width: ${4 + Math.random() * 6}px;
+        height: ${4 + Math.random() * 6}px;
+        background: white;
+        border-radius: 50%;
+        opacity: ${0.5 + Math.random() * 0.5};
+        filter: blur(${Math.random()}px);
+        animation: snowfall ${10 + Math.random() * 10}s linear infinite;
+        animation-delay: ${Math.random() * 5}s;
+      `;
+      container.appendChild(snowflake);
+    }
+    
+    // Add CSS for animation
+    if (!document.querySelector('#snowfall-animation')) {
+      const style = document.createElement('style');
+      style.id = 'snowfall-animation';
+      style.textContent = `
+        @keyframes snowfall {
+          0% {
+            transform: translateY(0) translateX(0) rotate(0deg);
+          }
+          100% {
+            transform: translateY(100vh) translateX(${Math.random() * 100 - 50}px) rotate(360deg);
+          }
+        }
+        
+        .christmas-active .wip-section {
+          background: linear-gradient(135deg, var(--christmas-green), var(--christmas-red)) !important;
+        }
+        
+        .christmas-active .cart-page {
+          background: linear-gradient(135deg, #f8f9fa, #e8f5e8) !important;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+});
   </script>
 </body>
 </html>

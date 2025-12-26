@@ -937,7 +937,10 @@ document.addEventListener('DOMContentLoaded', function() {
 class ChristmasEffects {
     constructor() {
         this.isChristmasPeriod = this.checkChristmasPeriod();
-        this.isEnabled = localStorage.getItem('christmasEnabled') === 'true' && this.isChristmasPeriod;
+        this.adminDisabled = localStorage.getItem('christmasDisabled') === 'true';
+        this.isEnabled = !this.adminDisabled && 
+                       localStorage.getItem('christmasEnabled') === 'true' && 
+                       this.isChristmasPeriod;
         this.settings = {
             snowflakeCount: localStorage.getItem('snowflakeCount') || 100,
             snowflakeSpeed: localStorage.getItem('snowflakeSpeed') || 'medium',
@@ -968,7 +971,7 @@ class ChristmasEffects {
     }
 
     init() {
-        if (this.isChristmasPeriod) {
+        if (this.isChristmasPeriod && !this.adminDisabled) {
             this.createToggleButton();
             if (this.isEnabled) {
                 this.enableEffects();
@@ -1101,7 +1104,6 @@ class ChristmasEffects {
         if (this.settings.enableMusic) {
             this.playChristmasMusic();
         }
-        this.updateAdminStatus(true);
     }
 
     disableEffects() {
@@ -1109,7 +1111,6 @@ class ChristmasEffects {
         this.removeSnowfall();
         this.removeDecorations();
         this.stopChristmasMusic();
-        this.updateAdminStatus(false);
     }
 
     createSnowfall() {
@@ -1326,11 +1327,16 @@ class ChristmasEffects {
         document.getElementById('christmasSettings')?.classList.remove('active');
     }
 
-    updateAdminStatus(enabled) {
-        localStorage.setItem('christmasEffectsEnabled', enabled.toString());
-    }
-
     checkAdminSettings() {
+        // Check if admin has disabled Christmas effects
+        const adminDisabled = localStorage.getItem('christmasDisabled') === 'true';
+        if (adminDisabled) {
+            this.hideChristmasButton();
+            this.disableEffects();
+            return;
+        }
+        
+        // Check admin override settings
         const adminSettings = localStorage.getItem('christmasAdminSettings');
         if (adminSettings) {
             try {
@@ -1342,6 +1348,13 @@ class ChristmasEffects {
             } catch (e) {
                 console.error('Error parsing admin settings:', e);
             }
+        }
+    }
+
+    hideChristmasButton() {
+        const toggleButton = document.querySelector('.christmas-toggle');
+        if (toggleButton) {
+            toggleButton.style.display = 'none';
         }
     }
 
@@ -1361,6 +1374,31 @@ class ChristmasEffects {
             toast.classList.remove('show');
         }, 3000);
     }
+    
+    // Listen for admin changes in real-time
+    setupAdminListener() {
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'christmasDisabled') {
+                const adminDisabled = e.newValue === 'true';
+                if (adminDisabled) {
+                    this.hideChristmasButton();
+                    this.disableEffects();
+                } else {
+                    // If admin re-enables it, check if we should show button
+                    if (this.isChristmasPeriod) {
+                        this.showChristmasButton();
+                    }
+                }
+            }
+        });
+    }
+    
+    showChristmasButton() {
+        const toggleButton = document.querySelector('.christmas-toggle');
+        if (toggleButton) {
+            toggleButton.style.display = 'block';
+        }
+    }
 }
 
 // Initialize Christmas Effects
@@ -1372,6 +1410,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize Christmas Effects (after other initializations)
     setTimeout(() => {
         christmasEffects = new ChristmasEffects();
+        christmasEffects.setupAdminListener();
     }, 100);
 });
   </script>
